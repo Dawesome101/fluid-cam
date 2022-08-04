@@ -1,2 +1,3 @@
-# hover-hammer
-A unity project intended to prototype a game designed to have a player using a combat hover vehicle
+# Hover Hammer
+
+A unity project intended to prototype a game idea based around using a combat hover vehicle

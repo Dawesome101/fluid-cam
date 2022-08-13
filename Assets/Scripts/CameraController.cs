@@ -6,12 +6,10 @@ namespace SolidSky
 {
     public class CameraController : MonoBehaviour
     {
-        public enum LookMode { Forward, Free }
-        public LookMode lookMode;
-
         private InputManager inputManager;
 
-        private Collider hoverPlayerCollider;
+        public enum LookMode { Forward, Free }
+        public LookMode lookMode;
 
         //[Tooltip("This will automatically be set to the CameraAxis gameobject which is assigned at runtime. " + 
         //    "However if you would like to manually retarget the camera axis to a different game object, " +
@@ -30,8 +28,7 @@ namespace SolidSky
             "for the camera to orbit.")]
         public Transform cameraOrbitPosition;
 
-        public bool invertMouse;
-        public bool invertGamepad;
+        public bool invertCamera;
 
         public float camAxisRotDamping_C = 150f;
         public float camAxisRotDamping_M = 100f;
@@ -44,6 +41,7 @@ namespace SolidSky
         public float camRotDamping = 8f;
 
         private Ray bumpRay;
+        public float camBumpCastRadius = 0.25f;
         public float camBumpLength = 5f;
         public float camHeight = 2f;
         public float camBumpHeight = 1f;
@@ -61,11 +59,11 @@ namespace SolidSky
             } 
             else inputManager = FindObjectOfType<InputManager>();
 
-            if (!FindObjectOfType<InputManager>().GetComponent<Collider>())
-            {
-                Debug.LogError("Please ensure the hover player gameobject has a collider");
-            }
-            else hoverPlayerCollider = FindObjectOfType<InputManager>().GetComponent<Collider>();
+            //if (!FindObjectOfType<InputManager>().GetComponent<Collider>())
+            //{
+            //    Debug.LogError("Please ensure the hover player gameobject has a collider");
+            //}
+            //else hoverPlayerCollider = FindObjectOfType<InputManager>().GetComponent<Collider>();
 
             if (!GameObject.FindGameObjectWithTag("CameraAxis"))
             {
@@ -100,31 +98,16 @@ namespace SolidSky
 
         private void Update()
         {
-            //if (Input.GetButtonDown("R_Stick") && !player.jumped)
-            //{
-            //    if (lookMode == LookMode.Forward && !lookModeTransitionActive)
-            //    {
-            //        lookMode = LookMode.Free;
-            //    }
-            //    else if (lookMode == LookMode.Free && !lookModeTransitionActive)
-            //    {
-            //        player.playerLookModeTransitionRot.y = player.cc.transform.eulerAngles.y;
-            //        player.camAxisLookModeTransitionRot.y = camAxis.eulerAngles.y;
-            //        player.lookModeTransitionStartTime = Time.time;
 
-            //        lookMode = LookMode.Forward;
-            //        lookModeTransitionActive = true;
-            //    }
-            //}
         }
 
         private void LateUpdate()
         {
+            CheckForInverted();
+
             SetCamAxisPosRot();
 
             SetCamPosRot();
-
-            //GetBumpPos();
         }
 
         private void FixedUpdate()
@@ -132,7 +115,18 @@ namespace SolidSky
             GetBumpPos();
         }
 
-        public bool lookModeTransitionActive;
+        private void CheckForInverted()
+        {
+            if (!invertCamera && inputManager.rStickOn)
+            {
+                invertCamera = true;
+            }
+            else if (invertCamera && !inputManager.rStickOn)
+            {
+                invertCamera = false;
+            }
+        }
+
         private void SetCamAxisPosRot()
         {
             if (camAxis.position != camOrbitAxis.position)
@@ -166,10 +160,10 @@ namespace SolidSky
                 //    camAxis.eulerAngles = new Vector3(camAxis.eulerAngles.x, camAxis.eulerAngles.y, 0f);
                 //}
                 //else 
-                
-                if (inputManager.camRotValueX != 0f || inputManager.camRotValueY != 0f)
+
+                if (inputManager.cameraX != 0f || inputManager.cameraY != 0f)
                 {
-                    camAxis.Rotate(GetCameraRotation(inputManager.camRotValueX, -inputManager.camRotValueY, camAxisRotDamping_C, invertGamepad, true));
+                    camAxis.Rotate(GetCameraRotation(inputManager.cameraX, -inputManager.cameraY, camAxisRotDamping_C, invertCamera, true));
                     camAxis.eulerAngles = new Vector3(camAxis.eulerAngles.x, camAxis.eulerAngles.y, 0f);
                 }
             }
@@ -206,7 +200,7 @@ namespace SolidSky
             RaycastHit bumpHit;
             bumpRay = new Ray(camAxis.position, -camAxis.forward);
 
-            if (Physics.SphereCast(bumpRay, 2, out bumpHit, camBumpLength, hoverPlayerLayerMask))
+            if (Physics.SphereCast(bumpRay, camBumpCastRadius, out bumpHit, camBumpLength, hoverPlayerLayerMask))
             {
                 camPosition = new Vector3(bumpHit.point.x, bumpHit.point.y + camBumpHeight, bumpHit.point.z);
             }
@@ -214,15 +208,6 @@ namespace SolidSky
             {
                 camPosition = camAxis.TransformPoint(new Vector3(0f, camBumpHeight, -camBumpLength));
             }
-
-            //if (Physics.Raycast(bumpRay, out bumpHit, camBumpLength, playerLayerMask))
-            //{
-            //    camPosition = new Vector3(bumpHit.point.x, bumpHit.point.y + camBumpHeight, bumpHit.point.z);
-            //}
-            //else
-            //{
-            //    camPosition = camAxis.TransformPoint(new Vector3(0f, camBumpHeight, -camBumpLength));
-            //}
         }
 
         private Vector3 GetCameraRotation(float horz, float vert, float damp, bool inverted, bool useDeltaTime)

@@ -3,40 +3,72 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
-
 namespace SolidSky 
 {
     public class InputManager : MonoBehaviour
     {
         public InputActions_SolidSky inputActions_SolidSky;
 
-        public Keyboard keyboard;
-        public Mouse mouse;
-        public Gamepad gamepad;
+        public enum CurrentDevice { KeyboardMouse, Gamepad };
+        public CurrentDevice currentDevice;
 
-        public InputDevice[] theDeviceArray;
+        private Keyboard keyboard;
+        private Mouse mouse;
+        private Gamepad gamepad;
 
-        public float camRotValueX;
-        public float camRotValueY;
+        public float cameraX;
+        public float cameraY;
+        public float moveX;
+        public float moveY;
+        public float boost;
+        public bool rStickOn;
+
         private void Awake()
         {
             inputActions_SolidSky = new InputActions_SolidSky();
 
-            inputActions_SolidSky.PlayerHoverSmall.Enable();
-            inputActions_SolidSky.PlayerHoverSmall.Movement.performed += Movement;
+            if (InputSystem.GetDevice<Keyboard>() == null || InputSystem.GetDevice<Mouse>() == null)
+            {
+                Debug.LogError("Please connect a keyboard and mouse.");
+            } 
+            else 
+            { 
+                keyboard = InputSystem.GetDevice<Keyboard>();
+                mouse = InputSystem.GetDevice<Mouse>();
 
-            inputActions_SolidSky.PlayerHoverSmall.HCamera.performed += HCameraPerformed;
-            inputActions_SolidSky.PlayerHoverSmall.HCamera.canceled += HCameraCanceled;
+                currentDevice = CurrentDevice.KeyboardMouse;
+            }
+
+            if (InputSystem.GetDevice<Gamepad>() != null) 
+            { 
+                gamepad = InputSystem.GetDevice<Gamepad>();
+
+                Debug.Log("Gamepad initialized");
+            }
+
+            
+
+            inputActions_SolidSky.PlayerHoverSmall.Enable();
+
+            inputActions_SolidSky.PlayerHoverSmall.Movement.performed += MovementPerformed;
+            inputActions_SolidSky.PlayerHoverSmall.Movement.canceled += MovementCanceled;
+
+            inputActions_SolidSky.PlayerHoverSmall.Camera.performed += CameraPerformed;
+            inputActions_SolidSky.PlayerHoverSmall.Camera.canceled += CameraCanceled;
 
             inputActions_SolidSky.PlayerHoverSmall.Boost.performed += Boost;
 
-
+            inputActions_SolidSky.PlayerHoverSmall.InvertCamera.started += InvertCamera;
         }
 
         private void Update()
         {
-            
+            WatchDeviceConnectivity();
+            WatchForCurrentDevice();
+        }
+
+        private void WatchDeviceConnectivity() 
+        {
             InputSystem.onDeviceChange +=
                 (device, change) =>
                 {
@@ -46,46 +78,71 @@ namespace SolidSky
 
                             if (device.displayName == "Xbox Controller")
                             {
-                                Debug.Log(device.name);
-                                Debug.Log(device.layout);
+                                gamepad = InputSystem.GetDevice<Gamepad>();
                             }
+
                             Debug.Log("New device added: " + device.displayName);
 
-
-                            
                             break;
 
                         case InputDeviceChange.Removed:
+
+                            if (device.displayName == "Xbox Controller")
+                            {
+                                gamepad = null;
+                            }
+
                             Debug.Log("Device removed: " + device);
                             break;
                     }
                 };
-            gamepad = InputSystem.GetDevice<Gamepad>();
-            Debug.Log(gamepad.lastUpdateTime);
-            //keyboard = InputSystem.GetDevice<Keyboard>();
-            //Debug.Log(keyboard.lastUpdateTime);
-            //Debug.Log(keyboard.f1Key.isPressed);
-        }
-        public void Movement(InputAction.CallbackContext context)
-        {
-            //Debug.Log("L" + context.ReadValue<Vector2>());
         }
 
-        public void Boost(InputAction.CallbackContext context)
-        {
-            Debug.Log(context.ReadValue<float>());
+        private void WatchForCurrentDevice() {
+            if (keyboard.lastUpdateTime > gamepad.lastUpdateTime || mouse.lastUpdateTime > gamepad.lastUpdateTime && currentDevice == CurrentDevice.Gamepad)
+            {
+                currentDevice = CurrentDevice.KeyboardMouse;
+            }
+            else if (gamepad.lastUpdateTime > keyboard.lastUpdateTime && gamepad.lastUpdateTime > mouse.lastUpdateTime && currentDevice == CurrentDevice.KeyboardMouse)
+            {
+                currentDevice = CurrentDevice.Gamepad;
+            }
         }
 
-        public void HCameraPerformed(InputAction.CallbackContext context)
+        private void MovementPerformed(InputAction.CallbackContext context)
         {
-            //Debug.Log("R" + context.ReadValue<Vector2>());
-            camRotValueX = context.ReadValue<Vector2>().x;
-            camRotValueY = context.ReadValue<Vector2>().y;
+            moveX = context.ReadValue<Vector2>().x;
+            moveY = context.ReadValue<Vector2>().y;
+        }
+        private void MovementCanceled(InputAction.CallbackContext context)
+        {
+            moveX = 0;
+            moveY = 0;
         }
 
-        public void HCameraCanceled(InputAction.CallbackContext context) {
-            camRotValueX = 0;
-            camRotValueY = 0;
+        private void CameraPerformed(InputAction.CallbackContext context)
+        {
+            cameraX = context.ReadValue<Vector2>().x;
+            cameraY = context.ReadValue<Vector2>().y;
+        }
+        private void CameraCanceled(InputAction.CallbackContext context)
+        {
+            cameraX = 0;
+            cameraY = 0;
+        }
+
+        private void Boost(InputAction.CallbackContext context)
+        {
+            boost = context.ReadValue<float>();
+        }
+
+        private void InvertCamera(InputAction.CallbackContext context) 
+        {
+            if (rStickOn)
+            {
+                rStickOn = false;
+            }
+            else { rStickOn = true; }
         }
     }
 }

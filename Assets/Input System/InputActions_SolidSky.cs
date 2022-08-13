@@ -28,6 +28,15 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
             ""id"": ""f73b4955-0a20-466c-a696-8d3b41850392"",
             ""actions"": [
                 {
+                    ""name"": ""Camera"",
+                    ""type"": ""Value"",
+                    ""id"": ""b02cfbbc-8bf0-40de-93ff-c8ba495194c2"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
                     ""name"": ""Movement"",
                     ""type"": ""Value"",
                     ""id"": ""4f33ff05-c49c-4206-a2d1-0ce1bd3e95db"",
@@ -46,125 +55,26 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Camera"",
-                    ""type"": ""Value"",
-                    ""id"": ""b02cfbbc-8bf0-40de-93ff-c8ba495194c2"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""name"": ""InvertCamera"",
+                    ""type"": ""Button"",
+                    ""id"": ""d6b6766b-8e92-4f83-b697-10a373b18e71"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
                 {
-                    ""name"": ""LeftStick"",
-                    ""id"": ""738517a6-3ba1-42ba-85aa-5b8457cdee7f"",
-                    ""path"": ""2DVector(mode=2)"",
+                    ""name"": """",
+                    ""id"": ""611bf6e5-8171-44a1-94c7-875b693bf107"",
+                    ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": true,
+                    ""groups"": ""Mouse_Keyboard"",
+                    ""action"": ""Boost"",
+                    ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""Up"",
-                    ""id"": ""4cc8891c-461a-474c-ab69-c70c643b9a21"",
-                    ""path"": ""<Gamepad>/leftStick/up"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad_Generic"",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Down"",
-                    ""id"": ""c583f10f-de56-49ac-bcde-498615c16f87"",
-                    ""path"": ""<Gamepad>/leftStick/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad_Generic"",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Left"",
-                    ""id"": ""c4eabbd6-0993-40a1-85cf-675c026926f8"",
-                    ""path"": ""<Gamepad>/leftStick/left"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad_Generic"",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Right"",
-                    ""id"": ""44cfcf88-9098-4f06-9be9-fc38653c79a7"",
-                    ""path"": ""<Gamepad>/leftStick/right"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad_Generic"",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""32e4b574-ce22-4d37-bd26-fa33c77c988a"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Movement"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""1e83528c-5dc4-43c9-98c5-53b10ebb760f"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse_Keyboard"",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""540bbc2a-f70d-4056-a528-9571db3761d9"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse_Keyboard"",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""261b7a1c-654e-495b-846c-b2d34cb6876d"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse_Keyboard"",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""f82b225d-3c62-4593-b60b-595397c9665c"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse_Keyboard"",
-                    ""action"": ""Movement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
@@ -179,12 +89,34 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
                 },
                 {
                     ""name"": """",
-                    ""id"": ""611bf6e5-8171-44a1-94c7-875b693bf107"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""id"": ""a0b12dd1-9b4c-4590-8e7b-27d12c232ea2"",
+                    ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse_Keyboard"",
-                    ""action"": ""Boost"",
+                    ""action"": ""Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1cc0699e-dee0-451e-9235-e1e0a88edad4"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse_Keyboard"",
+                    ""action"": ""InvertCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c982b719-adb8-4973-8476-b1406154455a"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad_Generic"",
+                    ""action"": ""InvertCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -244,15 +176,114 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""a0b12dd1-9b4c-4590-8e7b-27d12c232ea2"",
-                    ""path"": ""<Mouse>/delta"",
+                    ""name"": ""WASD"",
+                    ""id"": ""32e4b574-ce22-4d37-bd26-fa33c77c988a"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""1e83528c-5dc4-43c9-98c5-53b10ebb760f"",
+                    ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse_Keyboard"",
-                    ""action"": ""Camera"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""540bbc2a-f70d-4056-a528-9571db3761d9"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse_Keyboard"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""261b7a1c-654e-495b-846c-b2d34cb6876d"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse_Keyboard"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""f82b225d-3c62-4593-b60b-595397c9665c"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse_Keyboard"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""LeftStick"",
+                    ""id"": ""738517a6-3ba1-42ba-85aa-5b8457cdee7f"",
+                    ""path"": ""2DVector(mode=2)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Up"",
+                    ""id"": ""4cc8891c-461a-474c-ab69-c70c643b9a21"",
+                    ""path"": ""<Gamepad>/leftStick/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad_Generic"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Down"",
+                    ""id"": ""c583f10f-de56-49ac-bcde-498615c16f87"",
+                    ""path"": ""<Gamepad>/leftStick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad_Generic"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Left"",
+                    ""id"": ""c4eabbd6-0993-40a1-85cf-675c026926f8"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad_Generic"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Right"",
+                    ""id"": ""44cfcf88-9098-4f06-9be9-fc38653c79a7"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad_Generic"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -289,9 +320,10 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
 }");
         // PlayerHoverSmall
         m_PlayerHoverSmall = asset.FindActionMap("PlayerHoverSmall", throwIfNotFound: true);
+        m_PlayerHoverSmall_Camera = m_PlayerHoverSmall.FindAction("Camera", throwIfNotFound: true);
         m_PlayerHoverSmall_Movement = m_PlayerHoverSmall.FindAction("Movement", throwIfNotFound: true);
         m_PlayerHoverSmall_Boost = m_PlayerHoverSmall.FindAction("Boost", throwIfNotFound: true);
-        m_PlayerHoverSmall_Camera = m_PlayerHoverSmall.FindAction("Camera", throwIfNotFound: true);
+        m_PlayerHoverSmall_InvertCamera = m_PlayerHoverSmall.FindAction("InvertCamera", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -351,16 +383,18 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
     // PlayerHoverSmall
     private readonly InputActionMap m_PlayerHoverSmall;
     private IPlayerHoverSmallActions m_PlayerHoverSmallActionsCallbackInterface;
+    private readonly InputAction m_PlayerHoverSmall_Camera;
     private readonly InputAction m_PlayerHoverSmall_Movement;
     private readonly InputAction m_PlayerHoverSmall_Boost;
-    private readonly InputAction m_PlayerHoverSmall_Camera;
+    private readonly InputAction m_PlayerHoverSmall_InvertCamera;
     public struct PlayerHoverSmallActions
     {
         private @InputActions_SolidSky m_Wrapper;
         public PlayerHoverSmallActions(@InputActions_SolidSky wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Camera => m_Wrapper.m_PlayerHoverSmall_Camera;
         public InputAction @Movement => m_Wrapper.m_PlayerHoverSmall_Movement;
         public InputAction @Boost => m_Wrapper.m_PlayerHoverSmall_Boost;
-        public InputAction @Camera => m_Wrapper.m_PlayerHoverSmall_Camera;
+        public InputAction @InvertCamera => m_Wrapper.m_PlayerHoverSmall_InvertCamera;
         public InputActionMap Get() { return m_Wrapper.m_PlayerHoverSmall; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -370,28 +404,34 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
         {
             if (m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface != null)
             {
+                @Camera.started -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnCamera;
+                @Camera.performed -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnCamera;
+                @Camera.canceled -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnCamera;
                 @Movement.started -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnMovement;
                 @Boost.started -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnBoost;
                 @Boost.performed -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnBoost;
                 @Boost.canceled -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnBoost;
-                @Camera.started -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnCamera;
-                @Camera.performed -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnCamera;
-                @Camera.canceled -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnCamera;
+                @InvertCamera.started -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnInvertCamera;
+                @InvertCamera.performed -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnInvertCamera;
+                @InvertCamera.canceled -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnInvertCamera;
             }
             m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface = instance;
             if (instance != null)
             {
+                @Camera.started += instance.OnCamera;
+                @Camera.performed += instance.OnCamera;
+                @Camera.canceled += instance.OnCamera;
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
                 @Boost.started += instance.OnBoost;
                 @Boost.performed += instance.OnBoost;
                 @Boost.canceled += instance.OnBoost;
-                @Camera.started += instance.OnCamera;
-                @Camera.performed += instance.OnCamera;
-                @Camera.canceled += instance.OnCamera;
+                @InvertCamera.started += instance.OnInvertCamera;
+                @InvertCamera.performed += instance.OnInvertCamera;
+                @InvertCamera.canceled += instance.OnInvertCamera;
             }
         }
     }
@@ -416,8 +456,9 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
     }
     public interface IPlayerHoverSmallActions
     {
+        void OnCamera(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnBoost(InputAction.CallbackContext context);
-        void OnCamera(InputAction.CallbackContext context);
+        void OnInvertCamera(InputAction.CallbackContext context);
     }
 }

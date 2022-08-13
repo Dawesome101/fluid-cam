@@ -1,5 +1,5 @@
 {
-    "name": "HoverInputActions",
+    "name": "InputActions_SolidSky",
     "maps": [
         {
             "name": "PlayerHoverSmall",
@@ -16,15 +16,15 @@
                 },
                 {
                     "name": "Boost",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "a1db0b1a-3d2e-4422-8e83-1a709121936f",
-                    "expectedControlType": "Axis",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
                 },
                 {
-                    "name": "HCamera",
+                    "name": "Camera",
                     "type": "Value",
                     "id": "b02cfbbc-8bf0-40de-93ff-c8ba495194c2",
                     "expectedControlType": "Vector2",
@@ -51,7 +51,7 @@
                     "path": "<Gamepad>/leftStick/up",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad_Generic",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -62,7 +62,7 @@
                     "path": "<Gamepad>/leftStick/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad_Generic",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -73,7 +73,7 @@
                     "path": "<Gamepad>/leftStick/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad_Generic",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -84,7 +84,62 @@
                     "path": "<Gamepad>/leftStick/right",
                     "interactions": "",
                     "processors": "",
+                    "groups": "Gamepad_Generic",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "32e4b574-ce22-4d37-bd26-fa33c77c988a",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
                     "groups": "",
+                    "action": "Movement",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "1e83528c-5dc4-43c9-98c5-53b10ebb760f",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse_Keyboard",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "540bbc2a-f70d-4056-a528-9571db3761d9",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse_Keyboard",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "261b7a1c-654e-495b-846c-b2d34cb6876d",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse_Keyboard",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "f82b225d-3c62-4593-b60b-595397c9665c",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse_Keyboard",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -95,7 +150,18 @@
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad_Generic",
+                    "action": "Boost",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "611bf6e5-8171-44a1-94c7-875b693bf107",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse_Keyboard",
                     "action": "Boost",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -107,7 +173,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "HCamera",
+                    "action": "Camera",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -117,8 +183,8 @@
                     "path": "<Gamepad>/rightStick/up",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "HCamera",
+                    "groups": "Gamepad_Generic",
+                    "action": "Camera",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -128,8 +194,8 @@
                     "path": "<Gamepad>/rightStick/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "HCamera",
+                    "groups": "Gamepad_Generic",
+                    "action": "Camera",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -139,8 +205,8 @@
                     "path": "<Gamepad>/rightStick/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "HCamera",
+                    "groups": "Gamepad_Generic",
+                    "action": "Camera",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -150,32 +216,49 @@
                     "path": "<Gamepad>/rightStick/right",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "HCamera",
+                    "groups": "Gamepad_Generic",
+                    "action": "Camera",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "a0b12dd1-9b4c-4590-8e7b-27d12c232ea2",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse_Keyboard",
+                    "action": "Camera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
     ],
     "controlSchemes": [
         {
-            "name": "Hover",
-            "bindingGroup": "Hover",
+            "name": "Mouse_Keyboard",
+            "bindingGroup": "Mouse_Keyboard",
             "devices": [
                 {
-                    "devicePath": "<Gamepad>",
-                    "isOptional": true,
-                    "isOR": false
-                },
-                {
                     "devicePath": "<Keyboard>",
-                    "isOptional": true,
+                    "isOptional": false,
                     "isOR": false
                 },
                 {
                     "devicePath": "<Mouse>",
-                    "isOptional": true,
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "Gamepad_Generic",
+            "bindingGroup": "Gamepad_Generic",
+            "devices": [
+                {
+                    "devicePath": "<Gamepad>",
+                    "isOptional": false,
                     "isOR": false
                 }
             ]

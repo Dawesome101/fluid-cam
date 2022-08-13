@@ -9,7 +9,7 @@ namespace SolidSky
         public enum LookMode { Forward, Free }
         public LookMode lookMode;
 
-        private HoverController hoverController;
+        private InputManager inputManager;
 
         private Collider hoverPlayerCollider;
 
@@ -55,17 +55,17 @@ namespace SolidSky
 
         private void Awake()
         {
-            if (!FindObjectOfType<HoverController>())
+            if (!FindObjectOfType<InputManager>())
             {
-                Debug.LogError("Please add a player object with a HoverController component attached to the scene.");
+                Debug.LogError("Please add a player object with a InputManager component attached to the scene.");
             } 
-            else hoverController = FindObjectOfType<HoverController>();
+            else inputManager = FindObjectOfType<InputManager>();
 
-            if (!FindObjectOfType<HoverController>().GetComponent<Collider>())
+            if (!FindObjectOfType<InputManager>().GetComponent<Collider>())
             {
                 Debug.LogError("Please ensure the hover player gameobject has a collider");
             }
-            else hoverPlayerCollider = FindObjectOfType<HoverController>().GetComponent<Collider>();
+            else hoverPlayerCollider = FindObjectOfType<InputManager>().GetComponent<Collider>();
 
             if (!GameObject.FindGameObjectWithTag("CameraAxis"))
             {
@@ -167,9 +167,9 @@ namespace SolidSky
                 //}
                 //else 
                 
-                if (hoverController.camRotValueX != 0f || hoverController.camRotValueY != 0f)
+                if (inputManager.camRotValueX != 0f || inputManager.camRotValueY != 0f)
                 {
-                    camAxis.Rotate(GetCameraRotation(hoverController.camRotValueX, -hoverController.camRotValueY, camAxisRotDamping_C, invertGamepad, true));
+                    camAxis.Rotate(GetCameraRotation(inputManager.camRotValueX, -inputManager.camRotValueY, camAxisRotDamping_C, invertGamepad, true));
                     camAxis.eulerAngles = new Vector3(camAxis.eulerAngles.x, camAxis.eulerAngles.y, 0f);
                 }
             }

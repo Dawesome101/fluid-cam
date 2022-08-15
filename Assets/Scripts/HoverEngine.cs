@@ -6,8 +6,9 @@ namespace SolidSky
 {   
     public class HoverEngine : MonoBehaviour
     {
-        protected Rigidbody rb;
-        protected Collider col;
+        public Rigidbody rb;
+
+        public LayerMask hoverForceInteractionMask;
 
         public float mass;
         public float drag;
@@ -22,15 +23,31 @@ namespace SolidSky
         private RaycastHit heightRayHit;
 
         [Header("Debug")]
-        private GameObject debugSphere;
-        private Color castSphereColor;
+        public bool debugVisualization; 
         
-        public LayerMask hoverForceInteractionMask;
+        private GameObject debugSphere;
 
-        public bool debugVisualization;
+        private Material debugMatHit;
+        private Material debugMatMiss;
+
+        
+
+        
         protected void Awake()
         {
-            castSphereColor = new Vector4(255f, 0f, 0f, 0.5f);
+
+            debugMatHit = Resources.Load<Material>("Materials/GreenTransparent");
+            debugMatMiss = Resources.Load<Material>("Materials/RedTransparent");
+
+            if (TryGetComponent(out Rigidbody rigidB))
+            {
+                rb = rigidB;
+            }
+            else 
+            {
+                rb = gameObject.AddComponent<Rigidbody>();
+            }
+
         }
 
         protected void FixedUpdate()
@@ -42,23 +59,18 @@ namespace SolidSky
                 debugSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 debugSphere.transform.localScale = new Vector3(rayBumperRadius * 2, rayBumperRadius * 2, rayBumperRadius * 2);
                 Destroy(debugSphere.GetComponent<Collider>());
-                debugSphere.GetComponent<MeshRenderer>().material.color = castSphereColor;
-            }
-
-            if (debugVisualization)
-            {
                 
             }
-
-            
 
             Collider[] overlaps = Physics.OverlapSphere(transform.position, rayBumperRadius, hoverForceInteractionMask);
             if (overlaps.Length > 0)
             {
                 //add force here.
+                rb.AddForce(0f, force, 0f);
                 if (debugVisualization)
                 {
                     debugSphere.transform.position = transform.position;
+                    debugSphere.GetComponent<MeshRenderer>().material = debugMatHit;
                 }
             }
             else
@@ -66,9 +78,10 @@ namespace SolidSky
                 if (Physics.Raycast(heightRay, out heightRayHit, targetHeight, hoverForceInteractionMask))
                 {
                     //add force here.
+                    rb.AddForce(0f, force, 0f);
                     if (debugVisualization)
                     {
-                        Debug.DrawLine(transform.position, heightRayHit.point);
+                        Debug.DrawLine(transform.position, heightRayHit.point, Color.green);
                         debugSphere.transform.position = heightRayHit.point;
                     }
                 }
@@ -76,12 +89,12 @@ namespace SolidSky
                 {
                     if (debugVisualization)
                     {
-                        Debug.DrawLine(transform.position, new Vector3 (transform.position.x, transform.position.y - targetHeight, transform.position.z));
+                        Debug.DrawLine(transform.position, new Vector3 (transform.position.x, transform.position.y - targetHeight, transform.position.z), Color.red);
 
                         if (debugSphere != null)
                         {
-
-                            Destroy(debugSphere);
+                            debugSphere.transform.position = new Vector3(transform.position.x, transform.position.y - targetHeight, transform.position.z);
+                            debugSphere.GetComponent<MeshRenderer>().material = debugMatMiss;
                         }
                     }
                 }

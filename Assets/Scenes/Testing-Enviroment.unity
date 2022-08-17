@@ -385,7 +385,7 @@ MonoBehaviour:
   cameraX: 0
   cameraY: 0
   moveX: 0
-  moveY: 0
+  moveZ: 0
   boost: 0
   rStickOn: 0
 --- !u!54 &373973002
@@ -396,8 +396,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 373972995}
   serializedVersion: 2
-  m_Mass: 200
-  m_Drag: 1
+  m_Mass: 400
+  m_Drag: 0.1
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -1034,7 +1034,7 @@ MonoBehaviour:
   camAxis: {fileID: 0}
   camOrbitAxis: {fileID: 0}
   cameraOrbitPosition: {fileID: 844095966}
-  invertCamera: 0
+  invertCamera: 1
   camAxisRotDamping_C: 150
   camAxisRotDamping_M: 100
   camAxisAngleClamp: 85
@@ -1061,7 +1061,7 @@ GameObject:
   - component: {fileID: 1039628901}
   - component: {fileID: 1039628906}
   - component: {fileID: 1039628905}
-  - component: {fileID: 1039628904}
+  - component: {fileID: 1039628907}
   m_Layer: 6
   m_Name: hDrive
   m_TagString: PlayerVehicle
@@ -1147,18 +1147,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1039628898}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1039628904
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1039628898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e43d7b4ec79e12244baca20f816408bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!138 &1039628905
 FixedJoint:
   m_ObjectHideFlags: 0
@@ -1190,6 +1178,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &1039628907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1039628898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d28b3bff839ab0489d2e6153ce9340a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 200
+  drag: 0.2
+  force: 2500
 --- !u!1 &1198045024
 GameObject:
   m_ObjectHideFlags: 0
@@ -1333,7 +1336,7 @@ GameObject:
   - component: {fileID: 1633019764}
   - component: {fileID: 1633019769}
   - component: {fileID: 1633019768}
-  - component: {fileID: 1633019767}
+  - component: {fileID: 1633019770}
   m_Layer: 6
   m_Name: hEngine-FL
   m_TagString: PlayerVehicle
@@ -1419,27 +1422,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1633019762}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1633019767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1633019762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc413ed43469f8f4390f6a97a03462a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 15
-  drag: 1
-  force: 50
-  rayBumperRadius: 1
-  targetHeight: 5
-  hoverForceInteractionMask:
-    serializedVersion: 2
-    m_Bits: 1
-  debugVisualization: 1
 --- !u!138 &1633019768
 FixedJoint:
   m_ObjectHideFlags: 0
@@ -1463,7 +1445,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1633019762}
   serializedVersion: 2
-  m_Mass: 15
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -1471,6 +1453,28 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1633019770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1633019762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f852f7df7b89c8f40b65e947c7cd405d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  hoverForceInteractionMask:
+    serializedVersion: 2
+    m_Bits: 1
+  mass: 80
+  drag: 0.1
+  force: 2500
+  rayBumperRadius: 1
+  targetHeight: 5
+  debugVisualization: 1
 --- !u!1 &1713125650
 GameObject:
   m_ObjectHideFlags: 0
@@ -1485,7 +1489,7 @@ GameObject:
   - component: {fileID: 1713125652}
   - component: {fileID: 1713125657}
   - component: {fileID: 1713125656}
-  - component: {fileID: 1713125655}
+  - component: {fileID: 1713125658}
   m_Layer: 6
   m_Name: hEngine-FR
   m_TagString: PlayerVehicle
@@ -1571,27 +1575,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1713125650}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1713125655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1713125650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc413ed43469f8f4390f6a97a03462a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 15
-  drag: 1
-  force: 50
-  rayBumperRadius: 1
-  targetHeight: 5
-  hoverForceInteractionMask:
-    serializedVersion: 2
-    m_Bits: 1
-  debugVisualization: 1
 --- !u!138 &1713125656
 FixedJoint:
   m_ObjectHideFlags: 0
@@ -1615,7 +1598,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1713125650}
   serializedVersion: 2
-  m_Mass: 15
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -1623,6 +1606,28 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1713125658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1713125650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f852f7df7b89c8f40b65e947c7cd405d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  hoverForceInteractionMask:
+    serializedVersion: 2
+    m_Bits: 1
+  mass: 80
+  drag: 0.1
+  force: 2500
+  rayBumperRadius: 1
+  targetHeight: 5
+  debugVisualization: 1
 --- !u!1 &1832065741
 GameObject:
   m_ObjectHideFlags: 0
@@ -1637,7 +1642,7 @@ GameObject:
   - component: {fileID: 1832065743}
   - component: {fileID: 1832065748}
   - component: {fileID: 1832065747}
-  - component: {fileID: 1832065746}
+  - component: {fileID: 1832065749}
   m_Layer: 6
   m_Name: hEngine-RL
   m_TagString: PlayerVehicle
@@ -1723,27 +1728,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1832065741}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1832065746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1832065741}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc413ed43469f8f4390f6a97a03462a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 15
-  drag: 1
-  force: 50
-  rayBumperRadius: 1
-  targetHeight: 5
-  hoverForceInteractionMask:
-    serializedVersion: 2
-    m_Bits: 1
-  debugVisualization: 1
 --- !u!138 &1832065747
 FixedJoint:
   m_ObjectHideFlags: 0
@@ -1767,7 +1751,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1832065741}
   serializedVersion: 2
-  m_Mass: 25
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -1775,6 +1759,28 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1832065749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832065741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26164e9f953268d4e8ce7570ed0cb0c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  hoverForceInteractionMask:
+    serializedVersion: 2
+    m_Bits: 1
+  mass: 160
+  drag: 0.1
+  force: 5000
+  rayBumperRadius: 1
+  targetHeight: 5
+  debugVisualization: 1
 --- !u!1 &2066621388
 GameObject:
   m_ObjectHideFlags: 0
@@ -1887,7 +1893,7 @@ GameObject:
   - component: {fileID: 2096976148}
   - component: {fileID: 2096976153}
   - component: {fileID: 2096976152}
-  - component: {fileID: 2096976151}
+  - component: {fileID: 2096976154}
   m_Layer: 6
   m_Name: hEngine-RR
   m_TagString: PlayerVehicle
@@ -1973,27 +1979,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2096976146}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &2096976151
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2096976146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc413ed43469f8f4390f6a97a03462a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 15
-  drag: 1
-  force: 50
-  rayBumperRadius: 1
-  targetHeight: 5
-  hoverForceInteractionMask:
-    serializedVersion: 2
-    m_Bits: 1
-  debugVisualization: 1
 --- !u!138 &2096976152
 FixedJoint:
   m_ObjectHideFlags: 0
@@ -2017,7 +2002,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2096976146}
   serializedVersion: 2
-  m_Mass: 25
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -2025,3 +2010,25 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2096976154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2096976146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26164e9f953268d4e8ce7570ed0cb0c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  hoverForceInteractionMask:
+    serializedVersion: 2
+    m_Bits: 1
+  mass: 160
+  drag: 0.1
+  force: 5000
+  rayBumperRadius: 1
+  targetHeight: 5
+  debugVisualization: 1

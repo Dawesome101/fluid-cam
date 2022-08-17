@@ -19,7 +19,7 @@ namespace SolidSky
         public float cameraX;
         public float cameraY;
         public float moveX;
-        public float moveY;
+        public float moveZ;
         public float boost;
         public bool rStickOn;
 
@@ -112,12 +112,12 @@ namespace SolidSky
         private void MovementPerformed(InputAction.CallbackContext context)
         {
             moveX = context.ReadValue<Vector2>().x;
-            moveY = context.ReadValue<Vector2>().y;
+            moveZ = context.ReadValue<Vector2>().y;
         }
         private void MovementCanceled(InputAction.CallbackContext context)
         {
             moveX = 0;
-            moveY = 0;
+            moveZ = 0;
         }
 
         private void CameraPerformed(InputAction.CallbackContext context)

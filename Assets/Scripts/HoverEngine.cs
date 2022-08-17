@@ -33,9 +33,8 @@ namespace SolidSky
         
 
         
-        protected void Awake()
+        protected virtual void Awake()
         {
-
             debugMatHit = Resources.Load<Material>("Materials/GreenTransparent");
             debugMatMiss = Resources.Load<Material>("Materials/RedTransparent");
 
@@ -65,8 +64,7 @@ namespace SolidSky
             Collider[] overlaps = Physics.OverlapSphere(transform.position, rayBumperRadius, hoverForceInteractionMask);
             if (overlaps.Length > 0)
             {
-                //add force here.
-                rb.AddForce(0f, force, 0f);
+                rb.AddForce(0f, force, 0f, ForceMode.Force);
                 if (debugVisualization)
                 {
                     debugSphere.transform.position = transform.position;
@@ -77,11 +75,11 @@ namespace SolidSky
             {
                 if (Physics.Raycast(heightRay, out heightRayHit, targetHeight, hoverForceInteractionMask))
                 {
-                    //add force here.
-                    rb.AddForce(0f, force, 0f);
+                    rb.AddForce(0f, force, 0f, ForceMode.Force);
                     if (debugVisualization)
                     {
                         Debug.DrawLine(transform.position, heightRayHit.point, Color.green);
+                        debugSphere.GetComponent<MeshRenderer>().material = debugMatHit;
                         debugSphere.transform.position = heightRayHit.point;
                     }
                 }
@@ -99,6 +97,13 @@ namespace SolidSky
                     }
                 }
             }
+        }
+
+        protected virtual void SetupRigidbody(float rbMass, float rbDrag, float engineForce) 
+        {
+            rb.mass = rbMass;
+            rb.drag = rbDrag;
+            force = engineForce;
         }
     }
 }

@@ -356,7 +356,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 373972995}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 18, z: 189.6}
   m_LocalScale: {x: 4, y: 1, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1475,6 +1475,7 @@ MonoBehaviour:
   rayBumperRadius: 1
   targetHeight: 5
   debugVisualization: 1
+  divisor: 1.2
 --- !u!1 &1713125650
 GameObject:
   m_ObjectHideFlags: 0
@@ -1628,6 +1629,7 @@ MonoBehaviour:
   rayBumperRadius: 1
   targetHeight: 5
   debugVisualization: 1
+  divisor: 1.2
 --- !u!1 &1832065741
 GameObject:
   m_ObjectHideFlags: 0
@@ -1781,6 +1783,7 @@ MonoBehaviour:
   rayBumperRadius: 1
   targetHeight: 5
   debugVisualization: 1
+  divisor: 1.2
 --- !u!1 &2066621388
 GameObject:
   m_ObjectHideFlags: 0
@@ -2032,3 +2035,4 @@ MonoBehaviour:
   rayBumperRadius: 1
   targetHeight: 5
   debugVisualization: 1
+  divisor: 1.2

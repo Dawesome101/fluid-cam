@@ -6,6 +6,7 @@ namespace SolidSky
 {   
     public class HoverEngine : MonoBehaviour
     {
+        
         public Rigidbody rb;
 
         public LayerMask hoverForceInteractionMask;
@@ -13,8 +14,10 @@ namespace SolidSky
         public float mass;
         public float drag;
         public float force;
-        private float forceActual;
-        public float rayBumperRadius;
+        public float forceDivisor;
+        //remove forceActual from public once forces have been tested
+        public float forceActual;
+        
 
         [Tooltip("The target height is the distance from the ground the vehicle will attempt to hover. If the" +
             " vehicle is too heavy to reach the target height it will need more engines.")]
@@ -22,6 +25,13 @@ namespace SolidSky
 
         protected Ray heightRay;
         private RaycastHit heightRayHit;
+        public float rayBumperRadius;
+
+        [Header("Stabilization")]
+        public bool applyStabilization;
+        [Tooltip("This literally divides the force by this number and applys the quotient as a downward " +
+            "force to keep the craft from bobbing up and down.")]
+        public float stabilizationDivisor;
 
         [Header("Debug")]
         public bool debugVisualization; 
@@ -44,7 +54,6 @@ namespace SolidSky
             {
                 rb = gameObject.AddComponent<Rigidbody>();
             }
-
         }
 
         protected void FixedUpdate()
@@ -59,13 +68,19 @@ namespace SolidSky
                 
             }
 
+            //Check to make sure the initial start of the engine force ray has overlapped anything
             Collider[] overlaps = Physics.OverlapSphere(transform.position, rayBumperRadius, hoverForceInteractionMask);
             if (overlaps.Length > 0)
             {
-                forceActual = CalculateEngineForce(targetHeight, heightRayHit.distance, force);
-
-                //Debug.Log(forceActual);
-
+                if (applyStabilization)
+                {
+                    forceActual = CalculateEngineForce(targetHeight, heightRayHit.distance, force);
+                }
+                else
+                {
+                    forceActual = force;
+                }
+                
                 rb.AddForce(0f, forceActual, 0f, ForceMode.Force);
 
                 if (debugVisualization)
@@ -74,14 +89,21 @@ namespace SolidSky
                     debugSphere.GetComponent<MeshRenderer>().material = debugMatHit;
                 }
             }
+            //If the overlap is clear, fire ray straight downward at the ground looking for a collision
             else
             {
+                //If the ray hits something, apply global upward force from the engine center
                 if (Physics.Raycast(heightRay, out heightRayHit, targetHeight, hoverForceInteractionMask))
                 {
-                    forceActual = CalculateEngineForce(targetHeight, heightRayHit.distance, force);
-
-                    //Debug.Log(forceActual);
-
+                    if (applyStabilization)
+                    {
+                        forceActual = CalculateEngineForce(targetHeight, heightRayHit.distance, force);
+                    }
+                    else
+                    {
+                        forceActual = force;
+                    }
+                    
                     rb.AddForce(0f, forceActual, 0f, ForceMode.Force);
 
                     if (debugVisualization)
@@ -93,6 +115,11 @@ namespace SolidSky
                 }
                 else
                 {
+                    if (applyStabilization)
+                    {
+                        rb.AddForce(0f, -force * stabilizationDivisor, 0f);
+                    }
+
                     if (debugVisualization)
                     {
                         Debug.DrawLine(transform.position, new Vector3 (transform.position.x, transform.position.y - targetHeight, transform.position.z), Color.red);
@@ -114,12 +141,12 @@ namespace SolidSky
             force = engineForce;
         }
 
-        public float divisor;
+        
         private float CalculateEngineForce(float tHeight, float rayHitDistance, float f) 
         {
             float percentToGround = ((tHeight - rayHitDistance) / tHeight) * 100f;
             percentToGround = Mathf.InverseLerp(0f, 100f, percentToGround);
-            return Mathf.Lerp((f / divisor), f, percentToGround);
+            return Mathf.Lerp((f / forceDivisor), f, percentToGround);
         }
     }
 }

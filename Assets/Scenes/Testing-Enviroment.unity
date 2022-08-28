@@ -236,6 +236,7 @@ GameObject:
   - component: {fileID: 373972996}
   - component: {fileID: 373973001}
   - component: {fileID: 373973002}
+  - component: {fileID: 373973003}
   m_Layer: 6
   m_Name: HoverVSmall
   m_TagString: PlayerVehicle
@@ -356,7 +357,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 373972995}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 18, z: 189.6}
+  m_LocalPosition: {x: 0, y: 18, z: 225}
   m_LocalScale: {x: 4, y: 1, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -404,6 +405,32 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &373973003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373972995}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26164e9f953268d4e8ce7570ed0cb0c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  hoverForceInteractionMask:
+    serializedVersion: 2
+    m_Bits: 1
+  mass: 160
+  drag: 0.1
+  force: 5000
+  forceDivisor: 1.05
+  forceActual: 0
+  targetHeight: 5
+  rayBumperRadius: 0
+  applyStabilization: 1
+  stabilizationDivisor: 1.5
+  debugVisualization: 1
 --- !u!1 &588453802
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,8 +570,8 @@ GameObject:
   m_Component:
   - component: {fileID: 699376170}
   m_Layer: 0
-  m_Name: CameraOrbitAxis
-  m_TagString: CameraOrbitAxis
+  m_Name: CameraOrbitDeltaTarget
+  m_TagString: CameraOrbitDeltaTarget
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1032,12 +1059,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lookMode: 0
   camAxis: {fileID: 0}
-  camOrbitAxis: {fileID: 0}
-  cameraOrbitPosition: {fileID: 844095966}
+  cameraOrbitTarget: {fileID: 844095966}
+  cameraOrbitDeltaTarget: {fileID: 0}
   invertCamera: 1
   camAxisRotDamping_C: 150
   camAxisRotDamping_M: 100
-  camAxisAngleClamp: 85
+  camAxisAngleClamp: 60
   camPosDamping: 8
   camRotDamping: 8
   camBumpCastRadius: 0.25
@@ -1077,8 +1104,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1039628898}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.24, z: -0.476}
-  m_LocalScale: {x: 0.5, y: 1, z: 0.1}
+  m_LocalPosition: {x: 0, y: 0.52000046, z: -0.132}
+  m_LocalScale: {x: 0.5, y: 1, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 373973000}
@@ -1191,8 +1218,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mass: 200
-  drag: 0.2
-  force: 2500
+  drag: 0
+  force: 5000
+  inputAngleRaw: 0
+  multiplier: 20000
 --- !u!1 &1198045024
 GameObject:
   m_ObjectHideFlags: 0
@@ -1291,37 +1320,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1198045024}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1476207582
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1476207583}
-  m_Layer: 0
-  m_Name: CameraAxis
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1476207583
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1476207582}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.1347027, y: 5.6427627, z: -7.5308046}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1633019762
 GameObject:
   m_ObjectHideFlags: 0
@@ -1472,10 +1470,13 @@ MonoBehaviour:
   mass: 80
   drag: 0.1
   force: 2500
-  rayBumperRadius: 1
+  forceDivisor: 1.05
+  forceActual: 0
   targetHeight: 5
+  rayBumperRadius: 1
+  applyStabilization: 1
+  stabilizationDivisor: 1.8
   debugVisualization: 1
-  divisor: 1.2
 --- !u!1 &1713125650
 GameObject:
   m_ObjectHideFlags: 0
@@ -1626,10 +1627,13 @@ MonoBehaviour:
   mass: 80
   drag: 0.1
   force: 2500
-  rayBumperRadius: 1
+  forceDivisor: 1.05
+  forceActual: 0
   targetHeight: 5
+  rayBumperRadius: 1
+  applyStabilization: 1
+  stabilizationDivisor: 1.8
   debugVisualization: 1
-  divisor: 1.2
 --- !u!1 &1832065741
 GameObject:
   m_ObjectHideFlags: 0
@@ -1780,10 +1784,13 @@ MonoBehaviour:
   mass: 160
   drag: 0.1
   force: 5000
-  rayBumperRadius: 1
+  forceDivisor: 1.05
+  forceActual: 0
   targetHeight: 5
+  rayBumperRadius: 1
+  applyStabilization: 1
+  stabilizationDivisor: 1.8
   debugVisualization: 1
-  divisor: 1.2
 --- !u!1 &2066621388
 GameObject:
   m_ObjectHideFlags: 0
@@ -2032,7 +2039,10 @@ MonoBehaviour:
   mass: 160
   drag: 0.1
   force: 5000
-  rayBumperRadius: 1
+  forceDivisor: 1.05
+  forceActual: 0
   targetHeight: 5
+  rayBumperRadius: 1
+  applyStabilization: 1
+  stabilizationDivisor: 1.8
   debugVisualization: 1
-  divisor: 1.2

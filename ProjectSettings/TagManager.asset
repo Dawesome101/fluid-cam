@@ -8,6 +8,8 @@ TagManager:
   - CameraAxis
   - PlayerVehicle
   - CameraOrbitAxis
+  - CameraOrbitTarget
+  - CameraOrbitDeltaTarget
   layers:
   - Default
   - TransparentFX

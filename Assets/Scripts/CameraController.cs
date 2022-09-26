@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,103 +7,130 @@ namespace SolidSky
 {
     public class CameraController : MonoBehaviour
     {
+        private InputManager inputManager;
+
+        // camOrbitAxis is a game object with only a transform component which has a tag of CamOrbitAxis.
+        //it is used to 
+        private Transform camOrbitAxis; 
+        private Transform camOrbitAxisTargetPos;
+
+        [Tooltip("This is the object the camera will attempt to focus on. " +
+            "Typically this would be something like the players head or the " +
+            "cockpit of a vehicle, however it can be any transform so long " +
+            "as it is the object intended for the camera to focus on.")]
+        public Transform camFocusSubject;
         public enum LookMode { Forward, Free }
         public LookMode lookMode;
 
-        private HoverController hoverController;
-        private Collider hoverPlayerCollider;
-        public Transform camAxis;
-        private Transform camCenter;
-
-        public bool invertMouse;
-        public bool invertGamepad;
+        public bool invertCamera;
 
         public float camAxisRotDamping_C = 150f;
-        public float camAxisRotDamping_M = 100f;
         public float camAxisAngleClamp = 85f;
         private float camVerticalAxisAngle;
 
-        private Vector3 camPosition;
-        private Quaternion camRotation;
+        private Vector3 camTargetPosition;
+        private Quaternion camTargetRotation;
         public float camPosDamping = 8f;
         public float camRotDamping = 8f;
 
         private Ray bumpRay;
+        public float camBumpCastRadius = 0.25f;
         public float camBumpLength = 5f;
         public float camHeight = 2f;
         public float camBumpHeight = 1f;
+
+        [Tooltip("Make sure to remove all layers from this mask that you do not want the " +
+            "camera bumper ray to collide with. Typically this mask should only include t" +
+            "he default layer but you may include any layers you wish so long as you want the" +
+            "camera to treat them as bumper objects.")]
         public LayerMask hoverPlayerLayerMask;
 
         private void Awake()
         {
-            if (!FindObjectOfType<HoverController>())
+            if (!FindObjectOfType<InputManager>())
             {
-                Debug.LogError("Please add a player object with a HoverController component attached to the scene.");
+                Debug.LogError("CameraController needs a GameObject with an InputManager component attached to it in the scene.");
             } 
-            else hoverController = FindObjectOfType<HoverController>();
+            else inputManager = FindObjectOfType<InputManager>();
 
-            if (!FindObjectOfType<HoverController>().GetComponent<Collider>())
+            if (!GameObject.FindGameObjectWithTag("CameraOrbitAxis"))
             {
-                Debug.LogError("Please ensure the hover player gameobject has a collider");
+                Debug.LogError("The camera orbit axis object is missing from the scene. Create an " +
+                    "empty GameObject with the tag 'CameraOrbitAxis' then add it as a child of " +
+                    "the camera using the CameraController component.");
+            } 
+            else camOrbitAxis = GameObject.FindGameObjectWithTag("CameraOrbitAxis").transform;
+
+            if (!GameObject.FindGameObjectWithTag("CameraOrbitAxisTarget"))
+            {
+                Debug.LogError("The camera orbit axis target object is missing from the scene. " +
+                    "Create an empty GameObject with the tag 'CameraOrbitAxisTarget' then add it " +
+                    "as a child of the camera using the CameraController component.");
+            } 
+            else camOrbitAxisTargetPos = GameObject.FindGameObjectWithTag("CameraOrbitAxisTarget").transform;
+
+            if (!camFocusSubject)
+            {
+                Debug.LogError("The camera will attempt to focus on the transform assigned to " +
+                    "camFocusSubject which has not yet been set in the inspector. The transform " +
+                    "intended as the cameras subject must manually be assigned to Cam Focus Subject " +
+                    "in the inspector. Typically this would be set to a players head or a vehicles cockpit.");
             }
-            else hoverPlayerCollider = FindObjectOfType<HoverController>().GetComponent<Collider>();
-
-            if (!GameObject.FindGameObjectWithTag("CameraAxis"))
+            else
             {
-                Debug.LogError("Please add an empty GameObject with the tag 'CameraAxis' to the scene.");
-            } 
-            else camAxis = GameObject.FindGameObjectWithTag("CameraAxis").transform;
+                camOrbitAxisTargetPos.parent = camFocusSubject.transform;
+                camOrbitAxisTargetPos.localPosition = Vector3.zero;
+                camOrbitAxisTargetPos.localRotation = Quaternion.identity;
+            }
 
-            if (!GameObject.FindGameObjectWithTag("CameraAxisCenter"))
-            {
-                Debug.LogError("Please tag an object desired as the centerpoint for the camera hinge with the tag 'CameraAxisCenter'.");
-
-            } 
-            else camCenter = GameObject.FindGameObjectWithTag("CameraAxisCenter").transform;
-            
             transform.parent = null;
-            camAxis.transform.parent = null;
+            camOrbitAxis.transform.parent = null;
             lookMode = LookMode.Free;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-            //if (Input.GetButtonDown("R_Stick") && !player.jumped)
-            //{
-            //    if (lookMode == LookMode.Forward && !lookModeTransitionActive)
-            //    {
-            //        lookMode = LookMode.Free;
-            //    }
-            //    else if (lookMode == LookMode.Free && !lookModeTransitionActive)
-            //    {
-            //        player.playerLookModeTransitionRot.y = player.cc.transform.eulerAngles.y;
-            //        player.camAxisLookModeTransitionRot.y = camAxis.eulerAngles.y;
-            //        player.lookModeTransitionStartTime = Time.time;
+            GetCamPosTarget();
 
-            //        lookMode = LookMode.Forward;
-            //        lookModeTransitionActive = true;
-            //    }
-            //}
-        }
+            CheckForInverted();
 
-        private void LateUpdate()
-        {
             SetCamAxisPosRot();
 
             SetCamPosRot();
         }
 
-        private void FixedUpdate()
+        private void GetCamPosTarget()
         {
-            GetBumpPos();
+            RaycastHit bumpHit;
+            bumpRay = new Ray(camOrbitAxis.position, -camOrbitAxis.forward);
+
+            if (Physics.SphereCast(bumpRay, camBumpCastRadius, out bumpHit, camBumpLength, hoverPlayerLayerMask))
+            {
+                camTargetPosition = new Vector3(bumpHit.point.x, bumpHit.point.y + camBumpHeight, bumpHit.point.z);
+            }
+            else
+            {
+                camTargetPosition = camOrbitAxis.TransformPoint(new Vector3(0f, camBumpHeight, -camBumpLength));
+            }
         }
 
-        public bool lookModeTransitionActive;
+        private void CheckForInverted()
+        {
+            if (!invertCamera && inputManager.rStickOn)
+            {
+                invertCamera = true;
+            }
+            else if (invertCamera && !inputManager.rStickOn)
+            {
+                invertCamera = false;
+            }
+        }
+
         private void SetCamAxisPosRot()
         {
-            if (camAxis.position != camCenter.position)
+            if (camOrbitAxis.position != camOrbitAxisTargetPos.position)
             {
-                camAxis.position = camCenter.position;
+                camOrbitAxis.position = camOrbitAxisTargetPos.position;
             }
 
             if (lookMode == LookMode.Forward)
@@ -113,15 +141,15 @@ namespace SolidSky
                 //}
                 //else 
                 
-                if (hoverController.camRotValueY != 0f)
-                {
-                    camAxis.Rotate(GetCameraRotation(0f, -hoverController.camRotValueY, camAxisRotDamping_C, invertGamepad, true));
-                }
+                //if (hoverController.camRotValueY != 0f)
+                //{
+                //    camAxis.Rotate(GetCameraRotation(0f, -hoverController.camRotValueY, camAxisRotDamping_C, invertGamepad, true));
+                //}
 
-                if (!lookModeTransitionActive)
-                {
-                    camAxis.eulerAngles = new Vector3(camAxis.eulerAngles.x, hoverController.transform.eulerAngles.y, 0f);
-                }
+                //if (!lookModeTransitionActive)
+                //{
+                //    camAxis.eulerAngles = new Vector3(camAxis.eulerAngles.x, hoverController.transform.eulerAngles.y, 0f);
+                //}
             }
             else if (lookMode == LookMode.Free)
             {
@@ -131,66 +159,42 @@ namespace SolidSky
                 //    camAxis.eulerAngles = new Vector3(camAxis.eulerAngles.x, camAxis.eulerAngles.y, 0f);
                 //}
                 //else 
-                
-                if (hoverController.camRotValueX != 0f || hoverController.camRotValueY != 0f)
+
+                if (inputManager.cameraX != 0f || inputManager.cameraY != 0f)
                 {
-                    camAxis.Rotate(GetCameraRotation(hoverController.camRotValueX, -hoverController.camRotValueY, camAxisRotDamping_C, invertGamepad, true));
-                    camAxis.eulerAngles = new Vector3(camAxis.eulerAngles.x, camAxis.eulerAngles.y, 0f);
+                    camOrbitAxis.Rotate(GetCamOrbitAxisTargetRot(inputManager.cameraX, -inputManager.cameraY, camAxisRotDamping_C, invertCamera, true));
+                    camOrbitAxis.eulerAngles = new Vector3(camOrbitAxis.eulerAngles.x, camOrbitAxis.eulerAngles.y, 0f);
                 }
             }
 
-            camVerticalAxisAngle = Vector3.SignedAngle(camAxis.up, Vector3.up, camAxis.right);
+            camVerticalAxisAngle = Vector3.SignedAngle(camOrbitAxis.up, Vector3.up, camOrbitAxis.right);
 
             if (camVerticalAxisAngle > camAxisAngleClamp)
             {
-                camAxis.eulerAngles = new Vector3(-camAxisAngleClamp, camAxis.eulerAngles.y, 0f);
+                camOrbitAxis.eulerAngles = new Vector3(-camAxisAngleClamp, camOrbitAxis.eulerAngles.y, 0f);
             }
             else if (camVerticalAxisAngle < -camAxisAngleClamp)
             {
-                camAxis.eulerAngles = new Vector3(camAxisAngleClamp, camAxis.eulerAngles.y, 0f);
+                camOrbitAxis.eulerAngles = new Vector3(camAxisAngleClamp, camOrbitAxis.eulerAngles.y, 0f);
             }
         }
 
         private void SetCamPosRot()
         {
-            camRotation = Quaternion.LookRotation(camAxis.position - transform.position, camAxis.up);
+            camTargetRotation = Quaternion.LookRotation(camOrbitAxis.position - transform.position, camOrbitAxis.up);
 
-            if (transform.rotation != camRotation)
+            if (transform.position != camTargetPosition)
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, camRotation, camRotDamping * Time.deltaTime);
+                transform.position = Vector3.Lerp(transform.position, camTargetPosition, camPosDamping * Time.deltaTime);
             }
 
-            if (transform.position != camPosition)
+            if (transform.rotation != camTargetRotation)
             {
-                transform.position = Vector3.Lerp(transform.position, camPosition, camPosDamping * Time.deltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, camTargetRotation, camRotDamping * Time.deltaTime);
             }
         }
 
-        private void GetBumpPos()
-        {
-            RaycastHit bumpHit;
-            bumpRay = new Ray(camAxis.position, -camAxis.forward);
-
-            if (Physics.SphereCast(bumpRay, (hoverController.gameObject.transform.localScale.x/2), out bumpHit, camBumpLength, hoverPlayerLayerMask))
-            {
-                camPosition = new Vector3(bumpHit.point.x, bumpHit.point.y + camBumpHeight, bumpHit.point.z);
-            }
-            else
-            {
-                camPosition = camAxis.TransformPoint(new Vector3(0f, camBumpHeight, -camBumpLength));
-            }
-
-            //if (Physics.Raycast(bumpRay, out bumpHit, camBumpLength, playerLayerMask))
-            //{
-            //    camPosition = new Vector3(bumpHit.point.x, bumpHit.point.y + camBumpHeight, bumpHit.point.z);
-            //}
-            //else
-            //{
-            //    camPosition = camAxis.TransformPoint(new Vector3(0f, camBumpHeight, -camBumpLength));
-            //}
-        }
-
-        private Vector3 GetCameraRotation(float horz, float vert, float damp, bool inverted, bool useDeltaTime)
+        private Vector3 GetCamOrbitAxisTargetRot(float horz, float vert, float damp, bool inverted, bool useDeltaTime)
         {
             Vector3 newVec = Vector3.zero;
 

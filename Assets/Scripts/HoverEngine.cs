@@ -117,8 +117,14 @@ namespace SolidSky
                 {
                     if (applyStabilization)
                     {
-                        rb.AddForce(0f, -force * stabilizationDivisor, 0f);
+                        forceActual = force * stabilizationDivisor;
                     }
+                    else 
+                    {
+                        forceActual = force;
+                    }
+
+                    //rb.AddForce(0f, -forceActual, 0f, ForceMode.Force);
 
                     if (debugVisualization)
                     {

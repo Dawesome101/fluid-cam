@@ -56,6 +56,8 @@ namespace SolidSky
         public float inputAngleRaw;
         public float multiplier = 100f;
 
+       
+
         private void FixedUpdate()
         {
             //if (inputManager.moveX != 0f || inputManager.moveZ != 0f) 
@@ -71,15 +73,27 @@ namespace SolidSky
                 transform,
                 cam.transform,
                 1,
-                true);
-            Debug.Log("Free: " + inputAngleRaw);
+                false);
+            //Debug.Log("Free: " + inputAngleRaw);
+
+            Vector3 controlDirection = new Vector3(inputManager.moveX, 0, inputManager.moveZ);
+            Vector3 actualDirection = Camera.main.transform.TransformDirection(controlDirection);
+
+            rb.AddForce(actualDirection * force);
+            //AddForceAtAngle(force, inputAngleRaw);
 
 
-            Vector3 camForward = Camera.main.transform.forward;
-            Vector3 rbForward = rb.transform.forward;
 
-            Vector3 torque = Vector3.Cross(camForward, -rbForward);
-            rb.AddTorque(0f, torque.y * multiplier, 0f);
+            //Vector3 camForward = Camera.main.transform.forward;
+            //Vector3 rbForward = rb.transform.forward;
+
+            //Vector3 torque = Vector3.Cross(camForward, -rbForward);
+            //rb.AddTorque(0f, torque.y * multiplier, 0f);
+
+
+
+
+
             //if (cam.lookMode == Camera_Controller.LookMode.Forward)
             //{
             //    inputAngleRaw = MathTools.GetInputAngle(new Vector2(Input.GetAxis("L_Horizontal"), Input.GetAxis("L_Vertical")), 1);
@@ -119,6 +133,15 @@ namespace SolidSky
             //}
         }
 
+        public void AddForceAtAngle(float force, float angle)
+        {
+            angle *= Mathf.Deg2Rad;
+            float xComponent = Mathf.Cos(angle) * force;
+            float zComponent = Mathf.Sin(angle) * force;
+            Vector3 forceApplied = new Vector3(xComponent, 0, zComponent);
+
+            rb.AddForce(forceApplied);
+        }
         protected virtual void SetupRigidbody(float rbMass, float rbDrag, float driveForce)
         {
             rb.mass = rbMass;

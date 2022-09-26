@@ -357,7 +357,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 373972995}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 18, z: 225}
+  m_LocalPosition: {x: 111.6, y: 18, z: 225}
   m_LocalScale: {x: 4, y: 1, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -431,6 +431,37 @@ MonoBehaviour:
   applyStabilization: 1
   stabilizationDivisor: 1.5
   debugVisualization: 1
+--- !u!1 &547352389
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 547352390}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &547352390
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547352389}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.030279, y: 29.29, z: 235.19408}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &588453802
 GameObject:
   m_ObjectHideFlags: 0
@@ -879,6 +910,141 @@ Transform:
   - {fileID: 844095966}
   m_Father: {fileID: 373973000}
   m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &917967464
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 917967470}
+  - component: {fileID: 917967469}
+  - component: {fileID: 917967468}
+  - component: {fileID: 917967467}
+  - component: {fileID: 917967466}
+  - component: {fileID: 917967465}
+  m_Layer: 0
+  m_Name: Cube
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &917967465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917967464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24eb820a438732444bc034406562e943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 917967466}
+  hoverForceInteractionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  yForce: 5000
+  dampenFactor: 0.8
+  offsetFactor: 0.5
+  targetHeight: 10
+--- !u!54 &917967466
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917967464}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &917967467
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917967464}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &917967468
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917967464}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &917967469
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917967464}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &917967470
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917967464}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.9936018, y: 23.61, z: 237.94}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &952262114
 GameObject:
@@ -1335,6 +1501,7 @@ GameObject:
   - component: {fileID: 1633019769}
   - component: {fileID: 1633019768}
   - component: {fileID: 1633019770}
+  - component: {fileID: 1633019771}
   m_Layer: 6
   m_Name: hEngine-FL
   m_TagString: PlayerVehicle
@@ -1458,7 +1625,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1633019762}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f852f7df7b89c8f40b65e947c7cd405d, type: 3}
   m_Name: 
@@ -1469,14 +1636,34 @@ MonoBehaviour:
     m_Bits: 1
   mass: 80
   drag: 0.1
-  force: 2500
+  force: 5000
   forceDivisor: 1.05
   forceActual: 0
   targetHeight: 5
   rayBumperRadius: 1
-  applyStabilization: 1
+  applyStabilization: 0
   stabilizationDivisor: 1.8
   debugVisualization: 1
+--- !u!114 &1633019771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1633019762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24eb820a438732444bc034406562e943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 1633019769}
+  hoverForceInteractionMask:
+    serializedVersion: 2
+    m_Bits: 1
+  yForce: 1000
+  dampenFactor: 13.3
+  offsetFactor: 5.5
+  targetHeight: 8
 --- !u!1 &1713125650
 GameObject:
   m_ObjectHideFlags: 0
@@ -1492,6 +1679,7 @@ GameObject:
   - component: {fileID: 1713125657}
   - component: {fileID: 1713125656}
   - component: {fileID: 1713125658}
+  - component: {fileID: 1713125659}
   m_Layer: 6
   m_Name: hEngine-FR
   m_TagString: PlayerVehicle
@@ -1615,7 +1803,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1713125650}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f852f7df7b89c8f40b65e947c7cd405d, type: 3}
   m_Name: 
@@ -1626,14 +1814,34 @@ MonoBehaviour:
     m_Bits: 1
   mass: 80
   drag: 0.1
-  force: 2500
+  force: 5000
   forceDivisor: 1.05
   forceActual: 0
   targetHeight: 5
   rayBumperRadius: 1
-  applyStabilization: 1
+  applyStabilization: 0
   stabilizationDivisor: 1.8
   debugVisualization: 1
+--- !u!114 &1713125659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1713125650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24eb820a438732444bc034406562e943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 1713125657}
+  hoverForceInteractionMask:
+    serializedVersion: 2
+    m_Bits: 1
+  yForce: 1000
+  dampenFactor: 13.3
+  offsetFactor: 5.5
+  targetHeight: 8
 --- !u!1 &1832065741
 GameObject:
   m_ObjectHideFlags: 0
@@ -1649,6 +1857,7 @@ GameObject:
   - component: {fileID: 1832065748}
   - component: {fileID: 1832065747}
   - component: {fileID: 1832065749}
+  - component: {fileID: 1832065750}
   m_Layer: 6
   m_Name: hEngine-RL
   m_TagString: PlayerVehicle
@@ -1772,7 +1981,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1832065741}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26164e9f953268d4e8ce7570ed0cb0c4, type: 3}
   m_Name: 
@@ -1783,14 +1992,34 @@ MonoBehaviour:
     m_Bits: 1
   mass: 160
   drag: 0.1
-  force: 5000
+  force: 7000
   forceDivisor: 1.05
   forceActual: 0
   targetHeight: 5
   rayBumperRadius: 1
-  applyStabilization: 1
+  applyStabilization: 0
   stabilizationDivisor: 1.8
   debugVisualization: 1
+--- !u!114 &1832065750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832065741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24eb820a438732444bc034406562e943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 1832065748}
+  hoverForceInteractionMask:
+    serializedVersion: 2
+    m_Bits: 1
+  yForce: 1000
+  dampenFactor: 13.3
+  offsetFactor: 5.5
+  targetHeight: 8
 --- !u!1 &2066621388
 GameObject:
   m_ObjectHideFlags: 0
@@ -1904,6 +2133,7 @@ GameObject:
   - component: {fileID: 2096976153}
   - component: {fileID: 2096976152}
   - component: {fileID: 2096976154}
+  - component: {fileID: 2096976155}
   m_Layer: 6
   m_Name: hEngine-RR
   m_TagString: PlayerVehicle
@@ -2027,7 +2257,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2096976146}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26164e9f953268d4e8ce7570ed0cb0c4, type: 3}
   m_Name: 
@@ -2038,11 +2268,31 @@ MonoBehaviour:
     m_Bits: 1
   mass: 160
   drag: 0.1
-  force: 5000
+  force: 7000
   forceDivisor: 1.05
   forceActual: 0
   targetHeight: 5
   rayBumperRadius: 1
-  applyStabilization: 1
+  applyStabilization: 0
   stabilizationDivisor: 1.8
   debugVisualization: 1
+--- !u!114 &2096976155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2096976146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24eb820a438732444bc034406562e943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 2096976153}
+  hoverForceInteractionMask:
+    serializedVersion: 2
+    m_Bits: 1
+  yForce: 1000
+  dampenFactor: 13.3
+  offsetFactor: 5.5
+  targetHeight: 8

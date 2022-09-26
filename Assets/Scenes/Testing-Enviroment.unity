@@ -570,8 +570,8 @@ GameObject:
   m_Component:
   - component: {fileID: 639687430}
   m_Layer: 0
-  m_Name: CameraAxis
-  m_TagString: CameraAxis
+  m_Name: CameraOrbitAxis
+  m_TagString: CameraOrbitAxis
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -601,8 +601,8 @@ GameObject:
   m_Component:
   - component: {fileID: 699376170}
   m_Layer: 0
-  m_Name: CameraOrbitDeltaTarget
-  m_TagString: CameraOrbitDeltaTarget
+  m_Name: CameraOrbitAxisTarget
+  m_TagString: CameraOrbitAxisTarget
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1223,13 +1223,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 462aeb083fab7924c80c91cfda1783e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camFocusSubject: {fileID: 844095966}
   lookMode: 0
-  camAxis: {fileID: 0}
-  cameraOrbitTarget: {fileID: 844095966}
-  cameraOrbitDeltaTarget: {fileID: 0}
   invertCamera: 1
   camAxisRotDamping_C: 150
-  camAxisRotDamping_M: 100
   camAxisAngleClamp: 60
   camPosDamping: 8
   camRotDamping: 8

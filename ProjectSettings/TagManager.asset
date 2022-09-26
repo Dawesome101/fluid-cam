@@ -5,11 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Terrain
-  - CameraAxis
   - PlayerVehicle
   - CameraOrbitAxis
-  - CameraOrbitTarget
-  - CameraOrbitDeltaTarget
+  - CameraOrbitAxisTarget
   layers:
   - Default
   - TransparentFX

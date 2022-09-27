@@ -571,7 +571,7 @@ GameObject:
   - component: {fileID: 639687430}
   m_Layer: 0
   m_Name: CameraOrbitAxis
-  m_TagString: CameraOrbitAxis
+  m_TagString: CamOrbitAxis
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -602,7 +602,7 @@ GameObject:
   - component: {fileID: 699376170}
   m_Layer: 0
   m_Name: CameraOrbitAxisTarget
-  m_TagString: CameraOrbitAxisTarget
+  m_TagString: CamOrbitAxisTarget
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1224,19 +1224,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camFocusSubject: {fileID: 844095966}
-  lookMode: 0
-  invertCamera: 1
-  camAxisRotDamping_C: 150
-  camAxisAngleClamp: 60
-  camPosDamping: 8
-  camRotDamping: 8
-  camBumpCastRadius: 0.25
-  camBumpLength: 15
-  camHeight: 10
-  camBumpHeight: 3
-  hoverPlayerLayerMask:
+  sensorHitLayerMask:
     serializedVersion: 2
     m_Bits: 1
+  lookMode: 1
+  invertCamera: 1
+  camAxisRotDamping_C: 150
+  camAxisVerticalAngle: 0
+  camAxisAngleClampTolerance: 10
+  camAxisLowerAngleClamp: 80
+  camAxisUpperAngleClamp: 80
+  camPosDamping: 8
+  camRotDamping: 8
+  camSensorCastRadius: 0.25
+  camSensorProbeDistance: 5
+  camBumpHeight: 3
 --- !u!1 &1039628898
 GameObject:
   m_ObjectHideFlags: 0

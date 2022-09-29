@@ -18,7 +18,7 @@ namespace SolidSky
         // organzied. However the only requirement is that one be present in the scene.
         // camOrbitAxis is used to project the sphereCast environment sensor and provide
         // camera position information based on what the sensor hits.
-        private Transform camOrbitAxis;
+        public Transform camOrbitAxis;
 
         // camOrbitAxisTargetPos requires an empty GameObject which has the tag
         // CamOrbitAxisTarget to be present in the scene. It is recommended that
@@ -26,7 +26,7 @@ namespace SolidSky
         // component however the only requirement is that one be present in the scene.
         // camOrbitAxisTarget is used to provide angle information and position
         // information to the camOrbitAxis. 
-        private Transform camOrbitAxisTarget;
+        public Transform camOrbitAxisTarget;
 
         [Tooltip("This is the object the camera will attempt to focus on. It needs " +
             "to be manually set by dragging the object intended as the cameras " +
@@ -78,9 +78,16 @@ namespace SolidSky
         public float camRotDamping = 8f;
 
         private Ray sensorRay;
+        private RaycastHit sensorHit;
+        private bool sensorDidHit;
         public float camSensorCastRadius = 0.25f;
         public float camSensorProbeDistance = 5f;
-        public float camBumpHeight = 1f;
+        [Tooltip("This is the cameras vertical position offset from the end point of the " +
+            "sensor ray. This keeps the camera from clipping into geometry and may require " +
+            "adjustment for the projects specific needs.")]
+        public float camHeightOffset = 1f;
+
+        public bool enableDebug = false;
 
         
 
@@ -159,16 +166,16 @@ namespace SolidSky
 
         private void GetCamPosTarget()
         {
-            RaycastHit bumpHit;
             sensorRay = new Ray(camOrbitAxis.position, -camOrbitAxis.forward);
-
-            if (Physics.SphereCast(sensorRay, camSensorCastRadius, out bumpHit, camSensorProbeDistance, sensorHitLayerMask))
+            sensorDidHit = Physics.SphereCast(sensorRay, camSensorCastRadius, out sensorHit, camSensorProbeDistance, sensorHitLayerMask);
+            
+            if (sensorDidHit)
             {
-                camTargetPosition = new Vector3(bumpHit.point.x, bumpHit.point.y + camBumpHeight, bumpHit.point.z);
+                camTargetPosition = new Vector3(sensorHit.point.x, sensorHit.point.y + camHeightOffset, sensorHit.point.z);
             }
             else
             {
-                camTargetPosition = camOrbitAxis.TransformPoint(new Vector3(0f, camBumpHeight, -camSensorProbeDistance));
+                camTargetPosition = camOrbitAxis.TransformPoint(new Vector3(0f, camHeightOffset, -camSensorProbeDistance));
             }
         }
 
@@ -220,7 +227,7 @@ namespace SolidSky
 
                 if (inputManager.cameraX != 0f || inputManager.cameraY != 0f)
                 {
-                    camOrbitAxis.Rotate(GetCamOrbitAxisTargetRot(inputManager.cameraX, -inputManager.cameraY, camAxisRotDamping_C, invertCamera, true));
+                    camOrbitAxis.Rotate(GetCamOrbitAxisTargetRot(inputManager.cameraX, -inputManager.cameraY, camAxisRotDamping_C, invertCamera, false));
                     camOrbitAxis.eulerAngles = new Vector3(camOrbitAxis.eulerAngles.x, camOrbitAxis.eulerAngles.y, 0f);
                 }
             }
@@ -271,6 +278,30 @@ namespace SolidSky
             }
 
             return newVec;
+        }
+
+        void OnDrawGizmos()
+        {
+            //Check if there has been a hit yet
+            if (sensorDidHit)
+            {
+                if (Gizmos.color != Color.red) { Gizmos.color = Color.red; }
+                //Draw a Ray forward from GameObject toward the hit
+                Gizmos.DrawRay(camOrbitAxis.position, -camOrbitAxis.forward * sensorHit.distance);
+                //Draw a cube that extends to where the hit exists
+                //Gizmos.DrawWireCube(transform.position + transform.forward * m_Hit.distance, transform.localScale);
+                Gizmos.DrawWireSphere(sensorHit.point, camSensorCastRadius);
+            }
+            //If there hasn't been a hit yet, draw the ray at the maximum distance
+            else
+            {
+                if (Gizmos.color != Color.green) { Gizmos.color = Color.green; }
+                //Draw a Ray forward from GameObject toward the maximum distance
+                Gizmos.DrawRay(camOrbitAxis.position, -camOrbitAxis.forward * camSensorProbeDistance);
+                //Draw a cube at the maximum distance
+                //Gizmos.DrawWireCube(transform.position + transform.forward * m_MaxDistance, transform.localScale);
+                Gizmos.DrawWireSphere(camOrbitAxis.position + -camOrbitAxis.forward * camSensorProbeDistance, camSensorCastRadius);
+            }
         }
     }
 }

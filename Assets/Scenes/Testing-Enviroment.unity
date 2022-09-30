@@ -1231,7 +1231,7 @@ MonoBehaviour:
     m_Bits: 1
   lookMode: 1
   invertCamera: 1
-  camAxisRotDamping_C: 1
+  camAxisRotDamping_C: 150
   camAxisVerticalAngle: 0
   camAxisAngleClampTolerance: 10
   camAxisLowerAngleClamp: 80

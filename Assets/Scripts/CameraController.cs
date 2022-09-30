@@ -106,7 +106,6 @@ namespace SolidSky
                 camAxisUpperAngleClamp = 70f + camAxisAngleClampTolerance;
             }
 
-            
             camAxisUpperAngleClamp = Mathf.Clamp(camAxisUpperAngleClamp, -70f, 80f);
         }
         private void Awake()
@@ -227,7 +226,7 @@ namespace SolidSky
 
                 if (inputManager.cameraX != 0f || inputManager.cameraY != 0f)
                 {
-                    camOrbitAxis.Rotate(GetCamOrbitAxisTargetRot(inputManager.cameraX, -inputManager.cameraY, camAxisRotDamping_C, invertCamera, false));
+                    camOrbitAxis.Rotate(GetCamOrbitAxisTargetRot(inputManager.cameraX, -inputManager.cameraY, camAxisRotDamping_C, invertCamera, true));
                     camOrbitAxis.eulerAngles = new Vector3(camOrbitAxis.eulerAngles.x, camOrbitAxis.eulerAngles.y, 0f);
                 }
             }
@@ -257,6 +256,7 @@ namespace SolidSky
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, camTargetRotation, camRotDamping * Time.deltaTime);
             }
+            
         }
 
         private Vector3 GetCamOrbitAxisTargetRot(float horz, float vert, float damp, bool inverted, bool useDeltaTime)

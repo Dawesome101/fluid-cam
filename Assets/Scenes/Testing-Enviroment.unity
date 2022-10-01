@@ -1223,21 +1223,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 462aeb083fab7924c80c91cfda1783e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  invertCamera: 1
+  lookMode: 0
   camOrbitAxis: {fileID: 639687430}
   camOrbitAxisTarget: {fileID: 699376170}
   camFocusSubject: {fileID: 844095966}
-  sensorHitLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  lookMode: 1
-  invertCamera: 1
-  camAxisRotDamping_C: 150
-  camAxisVerticalAngle: 0
+  camAxisRotDamping_C: 200
+  camAxisRotDamping_M: 150
   camAxisAngleClampTolerance: 10
   camAxisLowerAngleClamp: 80
   camAxisUpperAngleClamp: 80
   camPosDamping: 8
   camRotDamping: 8
+  sensorHitLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
   camSensorCastRadius: 0.25
   camSensorProbeDistance: 10
   camHeightOffset: 1

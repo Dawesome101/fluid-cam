@@ -1,17 +1,28 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace SolidSky
 {
     public class CameraController : MonoBehaviour
     {
+        [Header("Camera Settings")]
+        [Tooltip("Enable this setting to invert the cameras vertical rotation control.")]
+        public bool invertCamera;
+        [Tooltip("Set this to the type of camera desired.")]
+        public enum LookMode { ThirdPerson, Free }
+        public LookMode lookMode;
+
+        
+
         // The input manager component is provided with the Fancy Fluid Camera asset and
         // is ready to use right out of the gate. If one is not already present on the
         // camera using the CameraController component, add one now.
         private InputManager inputManager;
 
+        [Header("Camera Objects")]
         // camOrbitAxis requires an empty GameObject which has the tag CamOrbitAxis to be
         // present in the scene. It is recommended that this GameObject is a child of the
         // camera which is using the CameraController component in order to keep things
@@ -36,22 +47,10 @@ namespace SolidSky
             "the camera to focus on.")]
         public Transform camFocusSubject;
 
-        [Tooltip("Initially this mask is only set to the default layer, however the " +
-            "cameras environment sensor will collide with any layer added to this mask " +
-            "making the camera adjust its position accordingly. Make sure this mask " +
-            "does not include the layer of the object it orbits (i.e. the player layer, " +
-            "etc.) or it may collide with it and cause unwanted behaviour.")]
-        public LayerMask sensorHitLayerMask = 1 << 0;
-
-        public enum LookMode { Forward, Free }
-        public LookMode lookMode;
-
-        [Tooltip("Enable this setting to invert the cameras vertical control.")]
-        public bool invertCamera;
-
-        //ADD Controller Damp and Mouse Damp
+        private float camAxisVerticalAngle;
+        [Header("Camera Orbit Axis Settings")]
         public float camAxisRotDamping_C = 150f;
-        public float camAxisVerticalAngle;
+        public float camAxisRotDamping_M = 150f;
         
         [Tooltip("The tolerance in degrees with witch Cam Axis Lower and Upper Angle Clamps " +
             "can be to one another. For example if this number is set to 5 then the camera " +
@@ -70,12 +69,38 @@ namespace SolidSky
             "Cam Axis Lower Angle Clamp. Meaning this number will never be closer to " +
             "Cam Axis Lower Angle Clamp than the tolerance.")]
         public float camAxisUpperAngleClamp = 80f;
-        
-        
+
+    
+        // This is the desired position for the camera and is used as the target
+        // destination for position lerping.
         private Vector3 camTargetPosition;
+        // This is the desired rotation for the camera and is used as the target
+        // destination for rotation lerping.
         private Quaternion camTargetRotation;
+
+        [Header("Camera Motion Settings")]
+        [Tooltip("This setting is for the camera itself, not the orbit axis. This is the " +
+            "position dampening used to speed up or slow down the cameras ability to " +
+            "relocate to its desired position. The default value for this is 8. This can " +
+            "be tweaked until getting the desired result. A lower number will cause it to " +
+            "move slower while a higher number will make it move faster. If you find the " +
+            "camera is trailing to far behind the target, try raising this number to help " +
+            "it catch up.")]
         public float camPosDamping = 8f;
+        [Tooltip("This setting is for the camera itself, not the orbit axis. This is the " +
+            "rotation dampening used to speed up or slow down the cameras ability to rotate " +
+            "in order to focus on the target. The default value for this number is 8 however " +
+            "raising it will speed up the cameras rotation and lowering it will slow it down. " +
+            "It is safe to tweak this value until getting the desired result.")]
         public float camRotDamping = 8f;
+
+        [Header("Sensor Settings")]
+        [Tooltip("Initially this mask is only set to the default layer, however the " +
+            "cameras environment sensor will collide with any layer added to this mask " +
+            "making the camera adjust its position accordingly. Make sure this mask " +
+            "does not include the layer of the object it orbits (i.e. the player layer, " +
+            "etc.) or it may collide with it and cause unwanted behaviour.")]
+        public LayerMask sensorHitLayerMask = 1 << 0;
 
         private Ray sensorRay;
         private RaycastHit sensorHit;
@@ -87,6 +112,7 @@ namespace SolidSky
             "adjustment for the projects specific needs.")]
         public float camHeightOffset = 1f;
 
+        [Header("Debug Settings")]
         public bool enableDebug = false;
 
         
@@ -197,38 +223,25 @@ namespace SolidSky
                 camOrbitAxis.position = camOrbitAxisTarget.position;
             }
 
-            if (lookMode == LookMode.Forward)
+            if (lookMode == LookMode.ThirdPerson)
             {
-                //if (Input.GetAxisRaw("Mouse_Y") != 0f)
-                //{
-                //    camAxis.Rotate(GetCameraRotation(0f, Input.GetAxis("Mouse_Y"), camAxisRotDamping_M, invertMouse, true));
-                //}
-                //else 
-                
-                //if (hoverController.camRotValueY != 0f)
-                //{
-                //    camAxis.Rotate(GetCameraRotation(0f, -hoverController.camRotValueY, camAxisRotDamping_C, invertGamepad, true));
-                //}
+                if (inputManager.cameraX != 0f || inputManager.cameraY != 0f)
+                {
+                    float camAxisRotDamping;
 
-                //if (!lookModeTransitionActive)
-                //{
-                //    camAxis.eulerAngles = new Vector3(camAxis.eulerAngles.x, hoverController.transform.eulerAngles.y, 0f);
-                //}
+                    if (inputManager.currentDevice == InputManager.CurrentDevice.KeyboardMouse)
+                    {
+                        camAxisRotDamping = camAxisRotDamping_M;
+                    }
+                    else { camAxisRotDamping = camAxisRotDamping_C; }
+
+                    camOrbitAxis.Rotate(GetCamOrbitAxisTargetRot(inputManager.cameraX, -inputManager.cameraY, camAxisRotDamping, invertCamera, true));
+                    camOrbitAxis.eulerAngles = new Vector3(camOrbitAxis.eulerAngles.x, camOrbitAxis.eulerAngles.y, 0f);
+                }
             }
             else if (lookMode == LookMode.Free)
             {
-                //if (Input.GetAxis("Mouse_X") != 0f || Input.GetAxisRaw("Mouse_Y") != 0f)
-                //{
-                //    camAxis.Rotate(GetCameraRotation(Input.GetAxis("Mouse_X"), Input.GetAxis("Mouse_Y"), camAxisRotDamping_M, invertMouse, true));
-                //    camAxis.eulerAngles = new Vector3(camAxis.eulerAngles.x, camAxis.eulerAngles.y, 0f);
-                //}
-                //else 
-
-                if (inputManager.cameraX != 0f || inputManager.cameraY != 0f)
-                {
-                    camOrbitAxis.Rotate(GetCamOrbitAxisTargetRot(inputManager.cameraX, -inputManager.cameraY, camAxisRotDamping_C, invertCamera, true));
-                    camOrbitAxis.eulerAngles = new Vector3(camOrbitAxis.eulerAngles.x, camOrbitAxis.eulerAngles.y, 0f);
-                }
+                //Add free flying camera controls
             }
 
             camAxisVerticalAngle = Vector3.SignedAngle(camOrbitAxis.up, Vector3.up, camOrbitAxis.right);

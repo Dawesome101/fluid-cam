@@ -7,8 +7,9 @@ namespace SolidSky
     public class MathTools : MonoBehaviour
     {
         /// <summary>
-        /// Remaps the horizontal/vertical input to a perfect circle instead of a square.
-        /// This prevents the issue of characters speeding up when moving diagonally, but maintains the analog stick sensivity.
+        /// Remaps the horizontal/vertical input to a circle instead of a square.
+        /// When used in tandom with a analog controler it prevents the issue of characters 
+        /// speeding up when moving diagonally while maintaining the analog stick sensivity.
         /// </summary>
         public static Vector2 GetAnalogStickCircle(string horizontal = "Horizontal", string vertical = "Vertical")
         {
@@ -31,13 +32,12 @@ namespace SolidSky
         }
 
         /// <summary>
-        /// Gets an angle from controller input with one of three types of value, radians, -180 to 180 or 0 to 360.  
-        /// Use angleType 0 for radians, use angleType 1 for 180 and angleType 2 for 360.  
-        /// If angleType is any other number than 0 or 1 it will return a 0 to 360 value.
+        /// Calculates an angle from the input vector. Use angleType 0 for radians, use angleType 1 for -180 to 180 and angleType 2 for 360.
         /// </summary>
         /// <param name="inputVec"></param>
         /// <param name="angleType"></param>
-        /// <returns></returns>
+        /// <returns>a radian, a value between -180 to 180 or a value between 0 and 360</returns>
+        /// <value>Radians or degrees.</value>
         public static float GetInputAngle(Vector2 inputVec, int angleType)
         {
             if (angleType == 0)
@@ -67,7 +67,6 @@ namespace SolidSky
         /// <param name="lowNum"></param>
         /// <param name="highNum"></param>
         /// <param name="targetNum"></param>
-        /// <returns></returns>
         public static float PercentDiffBetweenTwoNumbers(float startNum, float endNum, float targetNum)
         {
             return (targetNum - startNum) / (endNum - startNum);
@@ -79,7 +78,6 @@ namespace SolidSky
         /// <param name="root"></param>
         /// <param name="camera"></param>
         /// <param name="outputType"></param>
-        /// <returns></returns>
         public static float GetInputAngleOfRootRelativeToCamera(Vector2 input, Transform rootTrans, Transform camera, int outputType, bool useDebug)
         {
             Vector3 inputDirection = new Vector3(input.x, 0, input.y);
@@ -109,13 +107,30 @@ namespace SolidSky
         }
 
         /// <summary>
-        /// True lerp.
+        /// True linear interpolation of input values intended for use over time.
         /// </summary>
         /// <param name="start"></param>
         /// <param name="target"></param>
         /// <param name="startTime"></param>
         /// <param name="timeLength"></param>
-        /// <returns></returns>
+        /// <returns>A rounded interpolated value as an Int.</returns>
+        public static float IntLerp(float start, float target, float startTime, float timeLength)
+        {
+            float timeLerping = Time.time - startTime;
+
+            float percentageComplete = timeLerping / timeLength;
+
+            return Mathf.RoundToInt(Mathf.Lerp(start, target, percentageComplete));
+        }
+
+        /// <summary>
+        /// True float linear interpolation of input values intended for use over time.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="target"></param>
+        /// <param name="startTime"></param>
+        /// <param name="timeLength"></param>
+        /// <returns>An interpolated value as a float.</returns>
         public static float FloatLerp(float start, float target, float startTime, float timeLength)
         {
             float timeLerping = Time.time - startTime;
@@ -126,13 +141,13 @@ namespace SolidSky
         }
 
         /// <summary>
-        /// True lerp.
+        /// True Vector3 linear interpolation of input values intended for use over time.
         /// </summary>
         /// <param name="start"></param>
         /// <param name="target"></param>
         /// <param name="startTime"></param>
         /// <param name="timeLength"></param>
-        /// <returns></returns>
+        /// <returns>An interpolated value as a Vector3.</returns>
         public static Vector3 Vec3Lerp(Vector3 start, Vector3 target, float startTime, float timeLength)
         {
             float timeLerping = Time.time - startTime;
@@ -143,31 +158,28 @@ namespace SolidSky
         }
 
         /// <summary>
-        /// True lerp or slerp.
+        /// True Quaternion linear interpolation of input values intended for use over time.
         /// </summary>
         /// <param name="start"></param>
         /// <param name="target"></param>
         /// <param name="startTime"></param>
         /// <param name="timeLength"></param>
         /// <param name="slerp"></param>
-        /// <returns></returns>
+        /// <returns>An interpolated value as a quaternion.</returns>
         public static Quaternion QuatLerpNSlerp(Quaternion start, Quaternion target, float startTime, float timeLength, bool slerp)
         {
             float timeLerping = Time.time - startTime;
 
             float percentageComplete = timeLerping / timeLength;
 
-            Quaternion result = Quaternion.identity;
             if (!slerp)
             {
-                result = Quaternion.Lerp(start, target, percentageComplete);
+                return Quaternion.Lerp(start, target, percentageComplete);
             }
-            else if (slerp)
+            else 
             {
-                result = Quaternion.Slerp(start, target, percentageComplete);
+                return Quaternion.Slerp(start, target, percentageComplete);
             }
-
-            return result;
         }
     }
 }

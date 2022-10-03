@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 namespace SolidSky
@@ -42,11 +43,23 @@ namespace SolidSky
             "the camera to focus on.")]
         public Transform camFocusSubject;
 
-        private float camOrbitAxisVerticalAngle;
-        [Header("Camera Orbit Axis Settings")]
-        public float camAxisRotDamping_C = 150f;
-        public float camAxisRotDamping_M = 150f;
         
+        [Header("Camera Orbit Axis Dampening")]
+        [Tooltip("Orbit axis rotation dampening for a controller. The default value is 150.")]
+        public float camAxisRotDamping_C = 150f;
+        [Tooltip("Orbit axis rotation dampening for a mouse. The default value is 150.")]
+        public float camAxisRotDamping_M = 150f;
+        [Tooltip("In Unity, mouse input is only one of three values, -1, 0 or 1. Additionally " +
+            "Unity only detects movement if an entire pixel of movement is detected. This means " +
+            "that sub-pixel movement is not hard coded in. Raw Mouse Input Damping is intended " +
+            "to smooth out the jitter from this effect. In short, this value helps smooth out " +
+            "mouse movements. It is highly recommended to leave this set to 0.05 (the default " +
+            "value) however it can be adjusted for the projects specific needs. This value is " +
+            "clamped between 0 and 1.")]
+        [Range(0.0f, 1.0f)]
+        public float rawMouseInputDamping = 0.05f;
+
+        [Header("Camera Orbit Axis Angles")]
         [Tooltip("The tolerance in degrees with witch Cam Axis Lower and Upper Angle Clamps " +
             "can be to one another. For example if this number is set to 5 then the camera " +
             "clamps will never be closer than 5 degrees apart. This number can not be lower " +
@@ -64,8 +77,8 @@ namespace SolidSky
             "Cam Axis Lower Angle Clamp. Meaning this number will never be closer to " +
             "Cam Axis Lower Angle Clamp than the tolerance.")]
         public float camAxisUpperAngleClamp = 80f;
+        private float camOrbitAxisVerticalAngle;
 
-    
         // This is the desired position for the camera and is used as the target
         // destination for position lerping.
         private Vector3 camTargetPosition;
@@ -88,7 +101,7 @@ namespace SolidSky
             "raising it will speed up the cameras rotation and lowering it will slow it down. " +
             "It is safe to tweak this value until getting the desired result.")]
         public float camRotDamping = 8f;
-
+        
         [Header("Sensor Settings")]
         [Tooltip("Initially this mask is only set to the default layer, however the " +
             "cameras environment sensor will collide with any layer added to this mask " +
@@ -96,13 +109,10 @@ namespace SolidSky
             "does not include the layer of the object it orbits (i.e. the player layer, " +
             "etc.) or it may collide with it and cause unwanted behaviour.")]
         public LayerMask sensorHitLayerMask = 1 << 0;
-        public enum SensorType { Sphere, Cube }
-        public SensorType sensorType;
-
         private Ray sensorRay;
         private RaycastHit sensorHit;
         private bool sensorDidHit;
-        public float camSensorCastExtents = 0.25f;
+        public float camSensorCastRadius = 0.25f;
         public float camSensorProbeDistance = 5f;
         [Tooltip("This is the cameras vertical position offset from the end point of the " +
             "sensor ray. This keeps the camera from clipping into geometry and may require " +
@@ -178,12 +188,11 @@ namespace SolidSky
 
             transform.parent = null;
             camOrbitAxis.transform.parent = null;
-            lookMode = LookMode.Free;
         }
 
         private void FixedUpdate()
         {
-            GetCamPosTarget(sensorType);
+            GetCamPosTarget();
 
             CheckForInverted(enableDebug);
 
@@ -197,21 +206,12 @@ namespace SolidSky
         /// camera target position based on what it finds as well as stores the sensor 
         /// hit information which is intend for use with debug.
         /// </summary>
-        private void GetCamPosTarget(SensorType senseType)
+        private void GetCamPosTarget()
         {
-            // Construct the sensor ray.
-            sensorRay = new Ray(camOrbitAxis.position, -camOrbitAxis.forward);
-
             //Cast the sensor based on its type using the ray to detect the current environment.
-            if (senseType == SensorType.Sphere)
-            {
-                sensorDidHit = Physics.SphereCast(sensorRay, camSensorCastExtents, out sensorHit, camSensorProbeDistance, sensorHitLayerMask);
-            }
-            else if (senseType == SensorType.Cube)
-            { 
-            
-            }
-            
+            sensorRay = new Ray(camOrbitAxis.position, -camOrbitAxis.forward);
+            sensorDidHit = Physics.SphereCast(sensorRay, camSensorCastRadius, out sensorHit, camSensorProbeDistance, sensorHitLayerMask);
+
             //Store position information based on if the sensor has detected a collision or not.
             if (sensorDidHit)
             {
@@ -257,26 +257,31 @@ namespace SolidSky
 
             //Check for user input from the InputManager and if any is detected get and set the camera
             //axis rotation based on the change.
-            if (lookMode == LookMode.ThirdPerson)
+            if (inputManager.cameraX != 0f || inputManager.cameraY != 0f)
             {
-                //Check to see if user input is detected.
-                if (inputManager.cameraX != 0f || inputManager.cameraY != 0f)
+                //Set up our default values.
+                float cameraX = inputManager.cameraX;
+                float cameraY = inputManager.cameraY;
+                float camAxisRotDamping;
+                
+
+                //Check which device is sending input values and assigning the value to the global axis rotation dampening.
+                if (inputManager.currentDevice == InputManager.CurrentDevice.KeyboardMouse)
                 {
-                    float camAxisRotDamping;
+                    //Dampen the raw mouse input to smooth out jitter from micro movements.
+                    cameraX *= rawMouseInputDamping;
+                    cameraY *= rawMouseInputDamping;
 
-                    //Check which device is sending input values.
-                    if (inputManager.currentDevice == InputManager.CurrentDevice.KeyboardMouse)
-                    {
-                        camAxisRotDamping = camAxisRotDamping_M;
-                    }
-                    else { camAxisRotDamping = camAxisRotDamping_C; }
-
-                    //Rotate the orbit axis based on user input and zero out the z axis to prevent it from rolling.
-                    camOrbitAxis.Rotate(GetCamOrbitAxisTargetRot(inputManager.cameraX, -inputManager.cameraY, camAxisRotDamping, invertCamera, true));
-                    camOrbitAxis.eulerAngles = new Vector3(camOrbitAxis.eulerAngles.x, camOrbitAxis.eulerAngles.y, 0f);
+                    //Assigning the mouse damping to the orbit damping. This value is not related to rawMouseInputDamping.
+                    camAxisRotDamping = camAxisRotDamping_M;
                 }
-            }
+                else { camAxisRotDamping = camAxisRotDamping_C; }
 
+                //Rotate the orbit axis based on user input and zero out the z axis to prevent it from rolling.
+                camOrbitAxis.Rotate(GetCamOrbitAxisTargetRot(cameraX, -cameraY, camAxisRotDamping, invertCamera, true));
+                camOrbitAxis.eulerAngles = new Vector3(camOrbitAxis.eulerAngles.x, camOrbitAxis.eulerAngles.y, 0f);
+            }
+            
             //Get the signed angle of the orbit axis to make clamping between -180 and 180 simple.
             camOrbitAxisVerticalAngle = Vector3.SignedAngle(camOrbitAxis.up, Vector3.up, camOrbitAxis.right);
 
@@ -320,6 +325,7 @@ namespace SolidSky
         /// <param name="damp"></param>
         /// <param name="inverted"></param>
         /// <param name="useDeltaTime"></param>
+        /// <returns>One of 3 outputs, a new Vector 3 (vert, horz, 0f) * damp, the same but inverted or the same but *= deltaT</returns>
         private Vector3 GetCamOrbitAxisTargetRot(float horz, float vert, float damp, bool inverted, bool useDeltaTime)
         {
             Vector3 newVec = Vector3.zero;
@@ -343,25 +349,19 @@ namespace SolidSky
 
         void OnDrawGizmos()
         {
-            //Check if there has been a hit yet
             if (sensorDidHit)
             {
                 if (Gizmos.color != Color.red) { Gizmos.color = Color.red; }
-                //Draw a Ray forward from GameObject toward the hit
+
                 Gizmos.DrawRay(camOrbitAxis.position, -camOrbitAxis.forward * sensorHit.distance);
-                //Draw a cube that extends to where the hit exists
-                //Gizmos.DrawWireCube(transform.position + transform.forward * m_Hit.distance, transform.localScale);
-                Gizmos.DrawWireSphere(sensorHit.point, camSensorCastExtents);
+                Gizmos.DrawWireSphere(sensorHit.point, camSensorCastRadius);
             }
-            //If there hasn't been a hit yet, draw the ray at the maximum distance
             else
             {
                 if (Gizmos.color != Color.green) { Gizmos.color = Color.green; }
-                //Draw a Ray forward from GameObject toward the maximum distance
+
                 Gizmos.DrawRay(camOrbitAxis.position, -camOrbitAxis.forward * camSensorProbeDistance);
-                //Draw a cube at the maximum distance
-                //Gizmos.DrawWireCube(transform.position + transform.forward * m_MaxDistance, transform.localScale);
-                Gizmos.DrawWireSphere(camOrbitAxis.position + -camOrbitAxis.forward * camSensorProbeDistance, camSensorCastExtents);
+                Gizmos.DrawWireSphere(camOrbitAxis.position + -camOrbitAxis.forward * camSensorProbeDistance, camSensorCastRadius);
             }
         }
     }

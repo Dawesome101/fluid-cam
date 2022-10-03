@@ -21,7 +21,7 @@ namespace SolidSky
         public float moveX;
         public float moveZ;
         public float boost;
-        public bool rStickOn;
+        public bool invertedOn;
 
         private void Awake()
         {
@@ -138,11 +138,11 @@ namespace SolidSky
 
         private void InvertCamera(InputAction.CallbackContext context) 
         {
-            if (rStickOn)
+            if (invertedOn)
             {
-                rStickOn = false;
+                invertedOn = false;
             }
-            else { rStickOn = true; }
+            else { invertedOn = true; }
         }
     }
 }

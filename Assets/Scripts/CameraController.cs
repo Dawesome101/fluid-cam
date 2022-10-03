@@ -11,15 +11,10 @@ namespace SolidSky
         [Header("Camera Settings")]
         [Tooltip("Enable this setting to invert the cameras vertical rotation control.")]
         public bool invertCamera;
-        [Tooltip("Set this to the type of camera desired.")]
-        public enum LookMode { ThirdPerson, Free }
-        public LookMode lookMode;
 
-        
-
-        // The input manager component is provided with the Fancy Fluid Camera asset and
-        // is ready to use right out of the gate. If one is not already present on the
-        // camera using the CameraController component, add one now.
+        // The input manager component is provided with the asset and is ready to use
+        // right out of the gate. If one is not already present on the camera using
+        // the CameraController component, add one now.
         private InputManager inputManager;
 
         [Header("Camera Objects")]
@@ -47,7 +42,7 @@ namespace SolidSky
             "the camera to focus on.")]
         public Transform camFocusSubject;
 
-        private float camAxisVerticalAngle;
+        private float camOrbitAxisVerticalAngle;
         [Header("Camera Orbit Axis Settings")]
         public float camAxisRotDamping_C = 150f;
         public float camAxisRotDamping_M = 150f;
@@ -101,11 +96,13 @@ namespace SolidSky
             "does not include the layer of the object it orbits (i.e. the player layer, " +
             "etc.) or it may collide with it and cause unwanted behaviour.")]
         public LayerMask sensorHitLayerMask = 1 << 0;
+        public enum SensorType { Sphere, Cube }
+        public SensorType sensorType;
 
         private Ray sensorRay;
         private RaycastHit sensorHit;
         private bool sensorDidHit;
-        public float camSensorCastRadius = 0.25f;
+        public float camSensorCastExtents = 0.25f;
         public float camSensorProbeDistance = 5f;
         [Tooltip("This is the cameras vertical position offset from the end point of the " +
             "sensor ray. This keeps the camera from clipping into geometry and may require " +
@@ -119,6 +116,12 @@ namespace SolidSky
 
         public void OnValidate()
         {
+            //Check wether the upper and lower vertical orbit axis are above or below their thresholds.
+            //Additionally check that neither are closer than their tolerance with one another. Adjust
+            //the clamps if they are outside of their bounds.
+
+            //Note: It is okay to have the clampsMax and Min hard coded to 80f and -70f as they will
+            //always be the same number regardless of the camera systems use.
             camAxisLowerAngleClamp = Mathf.Clamp(camAxisLowerAngleClamp, -70f, 80f);
 
             camAxisAngleClampTolerance = Mathf.Clamp(camAxisAngleClampTolerance, 0f, 10f);
@@ -180,20 +183,36 @@ namespace SolidSky
 
         private void FixedUpdate()
         {
-            GetCamPosTarget();
+            GetCamPosTarget(sensorType);
 
-            CheckForInverted();
+            CheckForInverted(enableDebug);
 
             SetCamAxisPosRot();
 
             SetCamPosRot();
         }
 
-        private void GetCamPosTarget()
+        /// <summary>
+        /// Extends a sensor out from behind the orbit axis and stores the calculated 
+        /// camera target position based on what it finds as well as stores the sensor 
+        /// hit information which is intend for use with debug.
+        /// </summary>
+        private void GetCamPosTarget(SensorType senseType)
         {
+            // Construct the sensor ray.
             sensorRay = new Ray(camOrbitAxis.position, -camOrbitAxis.forward);
-            sensorDidHit = Physics.SphereCast(sensorRay, camSensorCastRadius, out sensorHit, camSensorProbeDistance, sensorHitLayerMask);
+
+            //Cast the sensor based on its type using the ray to detect the current environment.
+            if (senseType == SensorType.Sphere)
+            {
+                sensorDidHit = Physics.SphereCast(sensorRay, camSensorCastExtents, out sensorHit, camSensorProbeDistance, sensorHitLayerMask);
+            }
+            else if (senseType == SensorType.Cube)
+            { 
             
+            }
+            
+            //Store position information based on if the sensor has detected a collision or not.
             if (sensorDidHit)
             {
                 camTargetPosition = new Vector3(sensorHit.point.x, sensorHit.point.y + camHeightOffset, sensorHit.point.z);
@@ -204,62 +223,84 @@ namespace SolidSky
             }
         }
 
-        private void CheckForInverted()
+        /// <summary>
+        /// Sets inverted camera control flag to on or off. Intended for use with
+        /// controller debug enabling quick change of the inverted setting. Currently,
+        /// if debug is turned on, depressing the R stick on a controller or pressing
+        /// I on the keyboard toggles this setting on and off.
+        /// </summary>
+        private void CheckForInverted(bool debugIsEnabled)
         {
-            if (!invertCamera && inputManager.rStickOn)
+            if (debugIsEnabled)
             {
-                invertCamera = true;
-            }
-            else if (invertCamera && !inputManager.rStickOn)
-            {
-                invertCamera = false;
+                if (!invertCamera && inputManager.invertedOn)
+                {
+                    invertCamera = true;
+                }
+                else if (invertCamera && !inputManager.invertedOn)
+                {
+                    invertCamera = false;
+                }
             }
         }
 
+        /// <summary>
+        /// Calculates and sets the orbit axis rotation and position.
+        /// </summary>
         private void SetCamAxisPosRot()
         {
+            //Check wether the orbit axis has moved relative to the target orbit axis and set a new position if it has.
             if (camOrbitAxis.position != camOrbitAxisTarget.position)
             {
                 camOrbitAxis.position = camOrbitAxisTarget.position;
             }
 
+            //Check for user input from the InputManager and if any is detected get and set the camera
+            //axis rotation based on the change.
             if (lookMode == LookMode.ThirdPerson)
             {
+                //Check to see if user input is detected.
                 if (inputManager.cameraX != 0f || inputManager.cameraY != 0f)
                 {
                     float camAxisRotDamping;
 
+                    //Check which device is sending input values.
                     if (inputManager.currentDevice == InputManager.CurrentDevice.KeyboardMouse)
                     {
                         camAxisRotDamping = camAxisRotDamping_M;
                     }
                     else { camAxisRotDamping = camAxisRotDamping_C; }
 
+                    //Rotate the orbit axis based on user input and zero out the z axis to prevent it from rolling.
                     camOrbitAxis.Rotate(GetCamOrbitAxisTargetRot(inputManager.cameraX, -inputManager.cameraY, camAxisRotDamping, invertCamera, true));
                     camOrbitAxis.eulerAngles = new Vector3(camOrbitAxis.eulerAngles.x, camOrbitAxis.eulerAngles.y, 0f);
                 }
             }
-            else if (lookMode == LookMode.Free)
-            {
-                //Add free flying camera controls
-            }
 
-            camAxisVerticalAngle = Vector3.SignedAngle(camOrbitAxis.up, Vector3.up, camOrbitAxis.right);
+            //Get the signed angle of the orbit axis to make clamping between -180 and 180 simple.
+            camOrbitAxisVerticalAngle = Vector3.SignedAngle(camOrbitAxis.up, Vector3.up, camOrbitAxis.right);
 
-            if (camAxisVerticalAngle > camAxisLowerAngleClamp)
+            //Clamp the orbit axis so it never goes beyond the specified angles. This also helps avoid gimble lock.
+            if (camOrbitAxisVerticalAngle > camAxisLowerAngleClamp)
             {
                 camOrbitAxis.eulerAngles = new Vector3(-camAxisLowerAngleClamp, camOrbitAxis.eulerAngles.y, 0f);
             }
-            else if (camAxisVerticalAngle < -camAxisUpperAngleClamp)
+            else if (camOrbitAxisVerticalAngle < -camAxisUpperAngleClamp)
             {
                 camOrbitAxis.eulerAngles = new Vector3(camAxisUpperAngleClamp, camOrbitAxis.eulerAngles.y, 0f);
             }
         }
 
+        /// <summary>
+        /// Sets a new position and rotation for the camera if needed else does nothing.
+        /// </summary>
         private void SetCamPosRot()
         {
+            //Get the direction from the camera to the orbit axis
             camTargetRotation = Quaternion.LookRotation(camOrbitAxis.position - transform.position, camOrbitAxis.up);
-
+            
+            //Check to see if the camera should change position and/or rotation based on calculated
+            //values then set them if they have.
             if (transform.position != camTargetPosition)
             {
                 transform.position = Vector3.Lerp(transform.position, camTargetPosition, camPosDamping * Time.deltaTime);
@@ -269,9 +310,16 @@ namespace SolidSky
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, camTargetRotation, camRotDamping * Time.deltaTime);
             }
-            
         }
 
+        /// <summary>
+        /// Calculates a dampened Vector3 and inverts the vertical value and/or applies deltaTime if specified (in that order).
+        /// </summary>
+        /// <param name="horz"></param>
+        /// <param name="vert"></param>
+        /// <param name="damp"></param>
+        /// <param name="inverted"></param>
+        /// <param name="useDeltaTime"></param>
         private Vector3 GetCamOrbitAxisTargetRot(float horz, float vert, float damp, bool inverted, bool useDeltaTime)
         {
             Vector3 newVec = Vector3.zero;
@@ -303,7 +351,7 @@ namespace SolidSky
                 Gizmos.DrawRay(camOrbitAxis.position, -camOrbitAxis.forward * sensorHit.distance);
                 //Draw a cube that extends to where the hit exists
                 //Gizmos.DrawWireCube(transform.position + transform.forward * m_Hit.distance, transform.localScale);
-                Gizmos.DrawWireSphere(sensorHit.point, camSensorCastRadius);
+                Gizmos.DrawWireSphere(sensorHit.point, camSensorCastExtents);
             }
             //If there hasn't been a hit yet, draw the ray at the maximum distance
             else
@@ -313,7 +361,7 @@ namespace SolidSky
                 Gizmos.DrawRay(camOrbitAxis.position, -camOrbitAxis.forward * camSensorProbeDistance);
                 //Draw a cube at the maximum distance
                 //Gizmos.DrawWireCube(transform.position + transform.forward * m_MaxDistance, transform.localScale);
-                Gizmos.DrawWireSphere(camOrbitAxis.position + -camOrbitAxis.forward * camSensorProbeDistance, camSensorCastRadius);
+                Gizmos.DrawWireSphere(camOrbitAxis.position + -camOrbitAxis.forward * camSensorProbeDistance, camSensorCastExtents);
             }
         }
     }

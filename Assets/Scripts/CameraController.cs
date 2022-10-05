@@ -10,7 +10,7 @@ namespace SolidSky
     public class CameraController : MonoBehaviour
     {
         [Header("Camera Settings")]
-        [Tooltip("Enable this setting to invert the cameras vertical rotation control.")]
+        [Tooltip("Enable this setting to invert the cameras vertical control.")]
         public bool invertCamera;
 
         // The input manager component is provided with the asset and is ready to use
@@ -43,7 +43,6 @@ namespace SolidSky
             "the camera to focus on.")]
         public Transform camFocusSubject;
 
-        
         [Header("Camera Orbit Axis Dampening")]
         [Tooltip("Orbit axis rotation dampening for a controller. The default value is 150.")]
         public float camAxisRotDamping_C = 150f;
@@ -194,8 +193,6 @@ namespace SolidSky
         {
             GetCamPosTarget();
 
-            CheckForInverted(enableDebug);
-
             SetCamAxisPosRot();
 
             SetCamPosRot();
@@ -224,27 +221,6 @@ namespace SolidSky
         }
 
         /// <summary>
-        /// Sets inverted camera control flag to on or off. Intended for use with
-        /// controller debug enabling quick change of the inverted setting. Currently,
-        /// if debug is turned on, depressing the R stick on a controller or pressing
-        /// I on the keyboard toggles this setting on and off.
-        /// </summary>
-        private void CheckForInverted(bool debugIsEnabled)
-        {
-            if (debugIsEnabled)
-            {
-                if (!invertCamera && inputManager.invertedOn)
-                {
-                    invertCamera = true;
-                }
-                else if (invertCamera && !inputManager.invertedOn)
-                {
-                    invertCamera = false;
-                }
-            }
-        }
-
-        /// <summary>
         /// Calculates and sets the orbit axis rotation and position.
         /// </summary>
         private void SetCamAxisPosRot()
@@ -264,11 +240,10 @@ namespace SolidSky
                 float cameraY = inputManager.cameraY;
                 float camAxisRotDamping;
                 
-
                 //Check which device is sending input values and assigning the value to the global axis rotation dampening.
                 if (inputManager.currentDevice == InputManager.CurrentDevice.KeyboardMouse)
                 {
-                    //Dampen the raw mouse input to smooth out jitter from micro movements.
+                    //Dampen the raw mouse input to smooth out jitter from micro mouse movements.
                     cameraX *= rawMouseInputDamping;
                     cameraY *= rawMouseInputDamping;
 

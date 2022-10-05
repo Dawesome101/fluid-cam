@@ -388,7 +388,6 @@ MonoBehaviour:
   moveX: 0
   moveZ: 0
   boost: 0
-  rStickOn: 0
 --- !u!54 &373973002
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1223,13 +1222,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 462aeb083fab7924c80c91cfda1783e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  invertCamera: 1
-  lookMode: 0
+  invertCamera: 0
   camOrbitAxis: {fileID: 639687430}
   camOrbitAxisTarget: {fileID: 699376170}
   camFocusSubject: {fileID: 844095966}
   camAxisRotDamping_C: 200
-  camAxisRotDamping_M: 150
+  camAxisRotDamping_M: 1200
+  rawMouseInputDamping: 0.05
   camAxisAngleClampTolerance: 10
   camAxisLowerAngleClamp: 80
   camAxisUpperAngleClamp: 80

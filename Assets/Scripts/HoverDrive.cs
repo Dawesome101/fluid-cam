@@ -69,14 +69,14 @@ namespace SolidSky
             //Debug.Log("Forward: " + inputAngleRaw);
 
             inputAngleRaw = MathTools.GetInputAngleOfRootRelativeToCamera(
-                new Vector2(inputManager.moveX, inputManager.moveZ),
+                new Vector2(inputManager.playerMove.x, inputManager.playerMove.y),
                 transform,
                 cam.transform,
                 1,
                 false);
             //Debug.Log("Free: " + inputAngleRaw);
 
-            Vector3 controlDirection = new Vector3(inputManager.moveX, 0, inputManager.moveZ);
+            Vector3 controlDirection = new Vector3(inputManager.playerMove.x, 0, inputManager.playerMove.y);
             Vector3 actualDirection = Camera.main.transform.TransformDirection(controlDirection);
 
             rb.AddForce(actualDirection * force);

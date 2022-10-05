@@ -1,5 +1,5 @@
 {
-    "name": "InputActions_SolidSky",
+    "name": "InputActions_CoolCam",
     "maps": [
         {
             "name": "PlayerController",
@@ -28,6 +28,15 @@
                     "type": "Button",
                     "id": "a1db0b1a-3d2e-4422-8e83-1a709121936f",
                     "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "CameraZoom",
+                    "type": "Value",
+                    "id": "bc854bbd-456f-4e09-9580-edf9f2a940b3",
+                    "expectedControlType": "Delta",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -231,6 +240,17 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "7f8e0e0c-57fe-4cbf-838c-4eb9de6f990a",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse_Keyboard",
+                    "action": "CameraZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

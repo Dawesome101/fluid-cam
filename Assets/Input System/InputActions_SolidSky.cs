@@ -24,7 +24,7 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
     ""name"": ""InputActions_SolidSky"",
     ""maps"": [
         {
-            ""name"": ""PlayerHoverSmall"",
+            ""name"": ""PlayerController"",
             ""id"": ""f73b4955-0a20-466c-a696-8d3b41850392"",
             ""actions"": [
                 {
@@ -53,15 +53,6 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""InvertCamera"",
-                    ""type"": ""Button"",
-                    ""id"": ""d6b6766b-8e92-4f83-b697-10a373b18e71"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -95,28 +86,6 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""groups"": ""Mouse_Keyboard"",
                     ""action"": ""Camera"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1cc0699e-dee0-451e-9235-e1e0a88edad4"",
-                    ""path"": ""<Keyboard>/i"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse_Keyboard"",
-                    ""action"": ""InvertCamera"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""c982b719-adb8-4973-8476-b1406154455a"",
-                    ""path"": ""<Gamepad>/rightStickPress"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad_Generic"",
-                    ""action"": ""InvertCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -318,12 +287,11 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
         }
     ]
 }");
-        // PlayerHoverSmall
-        m_PlayerHoverSmall = asset.FindActionMap("PlayerHoverSmall", throwIfNotFound: true);
-        m_PlayerHoverSmall_Camera = m_PlayerHoverSmall.FindAction("Camera", throwIfNotFound: true);
-        m_PlayerHoverSmall_Movement = m_PlayerHoverSmall.FindAction("Movement", throwIfNotFound: true);
-        m_PlayerHoverSmall_Boost = m_PlayerHoverSmall.FindAction("Boost", throwIfNotFound: true);
-        m_PlayerHoverSmall_InvertCamera = m_PlayerHoverSmall.FindAction("InvertCamera", throwIfNotFound: true);
+        // PlayerController
+        m_PlayerController = asset.FindActionMap("PlayerController", throwIfNotFound: true);
+        m_PlayerController_Camera = m_PlayerController.FindAction("Camera", throwIfNotFound: true);
+        m_PlayerController_Movement = m_PlayerController.FindAction("Movement", throwIfNotFound: true);
+        m_PlayerController_Boost = m_PlayerController.FindAction("Boost", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -380,44 +348,39 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // PlayerHoverSmall
-    private readonly InputActionMap m_PlayerHoverSmall;
-    private IPlayerHoverSmallActions m_PlayerHoverSmallActionsCallbackInterface;
-    private readonly InputAction m_PlayerHoverSmall_Camera;
-    private readonly InputAction m_PlayerHoverSmall_Movement;
-    private readonly InputAction m_PlayerHoverSmall_Boost;
-    private readonly InputAction m_PlayerHoverSmall_InvertCamera;
-    public struct PlayerHoverSmallActions
+    // PlayerController
+    private readonly InputActionMap m_PlayerController;
+    private IPlayerControllerActions m_PlayerControllerActionsCallbackInterface;
+    private readonly InputAction m_PlayerController_Camera;
+    private readonly InputAction m_PlayerController_Movement;
+    private readonly InputAction m_PlayerController_Boost;
+    public struct PlayerControllerActions
     {
         private @InputActions_SolidSky m_Wrapper;
-        public PlayerHoverSmallActions(@InputActions_SolidSky wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Camera => m_Wrapper.m_PlayerHoverSmall_Camera;
-        public InputAction @Movement => m_Wrapper.m_PlayerHoverSmall_Movement;
-        public InputAction @Boost => m_Wrapper.m_PlayerHoverSmall_Boost;
-        public InputAction @InvertCamera => m_Wrapper.m_PlayerHoverSmall_InvertCamera;
-        public InputActionMap Get() { return m_Wrapper.m_PlayerHoverSmall; }
+        public PlayerControllerActions(@InputActions_SolidSky wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Camera => m_Wrapper.m_PlayerController_Camera;
+        public InputAction @Movement => m_Wrapper.m_PlayerController_Movement;
+        public InputAction @Boost => m_Wrapper.m_PlayerController_Boost;
+        public InputActionMap Get() { return m_Wrapper.m_PlayerController; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(PlayerHoverSmallActions set) { return set.Get(); }
-        public void SetCallbacks(IPlayerHoverSmallActions instance)
+        public static implicit operator InputActionMap(PlayerControllerActions set) { return set.Get(); }
+        public void SetCallbacks(IPlayerControllerActions instance)
         {
-            if (m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface != null)
+            if (m_Wrapper.m_PlayerControllerActionsCallbackInterface != null)
             {
-                @Camera.started -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnCamera;
-                @Camera.performed -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnCamera;
-                @Camera.canceled -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnCamera;
-                @Movement.started -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnMovement;
-                @Movement.performed -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnMovement;
-                @Movement.canceled -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnMovement;
-                @Boost.started -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnBoost;
-                @Boost.performed -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnBoost;
-                @Boost.canceled -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnBoost;
-                @InvertCamera.started -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnInvertCamera;
-                @InvertCamera.performed -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnInvertCamera;
-                @InvertCamera.canceled -= m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface.OnInvertCamera;
+                @Camera.started -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnCamera;
+                @Camera.performed -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnCamera;
+                @Camera.canceled -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnCamera;
+                @Movement.started -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnMovement;
+                @Boost.started -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnBoost;
+                @Boost.performed -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnBoost;
+                @Boost.canceled -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnBoost;
             }
-            m_Wrapper.m_PlayerHoverSmallActionsCallbackInterface = instance;
+            m_Wrapper.m_PlayerControllerActionsCallbackInterface = instance;
             if (instance != null)
             {
                 @Camera.started += instance.OnCamera;
@@ -429,13 +392,10 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
                 @Boost.started += instance.OnBoost;
                 @Boost.performed += instance.OnBoost;
                 @Boost.canceled += instance.OnBoost;
-                @InvertCamera.started += instance.OnInvertCamera;
-                @InvertCamera.performed += instance.OnInvertCamera;
-                @InvertCamera.canceled += instance.OnInvertCamera;
             }
         }
     }
-    public PlayerHoverSmallActions @PlayerHoverSmall => new PlayerHoverSmallActions(this);
+    public PlayerControllerActions @PlayerController => new PlayerControllerActions(this);
     private int m_Mouse_KeyboardSchemeIndex = -1;
     public InputControlScheme Mouse_KeyboardScheme
     {
@@ -454,11 +414,10 @@ public partial class @InputActions_SolidSky : IInputActionCollection2, IDisposab
             return asset.controlSchemes[m_Gamepad_GenericSchemeIndex];
         }
     }
-    public interface IPlayerHoverSmallActions
+    public interface IPlayerControllerActions
     {
         void OnCamera(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnBoost(InputAction.CallbackContext context);
-        void OnInvertCamera(InputAction.CallbackContext context);
     }
 }

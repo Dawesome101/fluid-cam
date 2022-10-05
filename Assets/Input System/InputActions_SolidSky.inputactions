@@ -2,7 +2,7 @@
     "name": "InputActions_SolidSky",
     "maps": [
         {
-            "name": "PlayerHoverSmall",
+            "name": "PlayerController",
             "id": "f73b4955-0a20-466c-a696-8d3b41850392",
             "actions": [
                 {
@@ -31,15 +31,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "InvertCamera",
-                    "type": "Button",
-                    "id": "d6b6766b-8e92-4f83-b697-10a373b18e71",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -73,28 +64,6 @@
                     "processors": "",
                     "groups": "Mouse_Keyboard",
                     "action": "Camera",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1cc0699e-dee0-451e-9235-e1e0a88edad4",
-                    "path": "<Keyboard>/i",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse_Keyboard",
-                    "action": "InvertCamera",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c982b719-adb8-4973-8476-b1406154455a",
-                    "path": "<Gamepad>/rightStickPress",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad_Generic",
-                    "action": "InvertCamera",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

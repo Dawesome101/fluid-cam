@@ -97,9 +97,8 @@ DerivedDataCache/*
 *.opendb
 
 #Meta Files
-*.pidb.meta
-*.pdb.meta
-*.mdb.meta
+*.meta
+*.*.meta
 
 # Crashlytics generated file
 crashlytics-build.properties

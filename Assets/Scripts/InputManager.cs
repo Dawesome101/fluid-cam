@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,7 +9,7 @@ namespace SolidSky
     public class InputManager : MonoBehaviour
     {
         //Input Actions Component
-        public InputActions_SolidSky inputActions_SolidSky;
+        public InputActions_CoolCam inputActionsCoolCam;
 
         //Currently Active Device
         public enum CurrentDevice { KeyboardMouse, Gamepad };
@@ -20,15 +21,14 @@ namespace SolidSky
         private Gamepad gamepad;
 
         //Player Controller Variables
-        public float cameraX;
-        public float cameraY;
-        public float moveX;
-        public float moveZ;
+        public Vector2 playerMove;
+        public Vector2 cameraMove;
+        public Vector2 cameraProximity;
         public float boost;
 
         private void Awake()
         {
-            inputActions_SolidSky = new InputActions_SolidSky();
+            inputActionsCoolCam = new InputActions_CoolCam();
 
             //Check for Keyboard and Mouse and assign them or throw an error if either are not detected.
             if (InputSystem.GetDevice<Keyboard>() == null || InputSystem.GetDevice<Mouse>() == null)
@@ -52,18 +52,21 @@ namespace SolidSky
             }
 
             //Enable Player Controller to send device actions
-            inputActions_SolidSky.PlayerController.Enable();
+            inputActionsCoolCam.PlayerController.Enable();
 
             //Watch for player movement input and apply functions if performed or canceled.
-            inputActions_SolidSky.PlayerController.Movement.performed += MovementPerformed;
-            inputActions_SolidSky.PlayerController.Movement.canceled += MovementCanceled;
+            inputActionsCoolCam.PlayerController.Movement.performed += MovementPerformed;
+            inputActionsCoolCam.PlayerController.Movement.canceled += MovementCanceled;
 
             //Watch for camera movement input and apply functions if performed or canceled.
-            inputActions_SolidSky.PlayerController.Camera.performed += CameraPerformed;
-            inputActions_SolidSky.PlayerController.Camera.canceled += CameraCanceled;
+            inputActionsCoolCam.PlayerController.Camera.performed += CameraPerformed;
+            inputActionsCoolCam.PlayerController.Camera.canceled += CameraCanceled;
+
+            inputActionsCoolCam.PlayerController.CameraZoom.performed += CameraZoomPerformed;
+            inputActionsCoolCam.PlayerController.CameraZoom.canceled += CameraZoomCanceled;
 
             //Watch for boost input and apply functions if performed or canceled.
-            inputActions_SolidSky.PlayerController.Boost.performed += Boost;
+            inputActionsCoolCam.PlayerController.Boost.performed += Boost;
         }
 
         private void Update()
@@ -134,22 +137,21 @@ namespace SolidSky
         /// <param name="context"></param>
         private void MovementPerformed(InputAction.CallbackContext context)
         {
-            moveX = context.ReadValue<Vector2>().x;
-            moveZ = context.ReadValue<Vector2>().y;
+            playerMove = context.ReadValue<Vector2>();
         }
 
         /// <summary>
-        ///     Zeros out movement values if no movement is detected.
+        ///     Zeros out values if no input is detected.
         /// </summary>
         /// <remarks>
-        ///     Zeroing is necessary because the last value when movement is canceled is 
-        ///     never 0 which causes drifting even when no input is detected.
+        ///     Zeroing is necessary because the last value stored before being canceled is 
+        ///     never 0 which leaves a small remainder causing drifting even when no input 
+        ///     is detected.
         /// </remarks>
         /// <param name="context"></param>
         private void MovementCanceled(InputAction.CallbackContext context)
         {
-            moveX = 0;
-            moveZ = 0;
+            playerMove = Vector2.zero;
         }
 
         /// <summary>
@@ -158,22 +160,42 @@ namespace SolidSky
         /// <param name="context"></param>
         private void CameraPerformed(InputAction.CallbackContext context)
         {
-            cameraX = context.ReadValue<Vector2>().x;
-            cameraY = context.ReadValue<Vector2>().y;
+            cameraMove = context.ReadValue<Vector2>();
         }
 
         /// <summary>
-        ///     Zeros out movement values if no movement is detected.
+        ///     Zeros out values if no input is detected.
         /// </summary>
         /// <remarks>
-        ///     Zeroing is necessary because the last value when movement is canceled is 
-        ///     never 0 which causes drifting even when no input is detected.
+        ///     Zeroing is necessary because the last value stored before being canceled is 
+        ///     never 0 which leaves a small remainder causing drifting even when no input 
+        ///     is detected.
         /// </remarks>
         /// <param name="context"></param>
         private void CameraCanceled(InputAction.CallbackContext context)
         {
-            cameraX = 0;
-            cameraY = 0;
+            cameraMove = Vector2.zero;
+        }
+
+        private void CameraZoomPerformed(InputAction.CallbackContext context)
+        {
+            cameraProximity = context.ReadValue<Vector2>();
+
+            if (cameraProximity.y > 0)
+            {
+                cameraProximity.y = 1;
+            }
+            else if (cameraProximity.y < 0)
+            {
+                cameraProximity.y = -1;
+            }
+
+            Debug.Log("Camera Zoom: " + cameraProximity);
+        }
+
+        private void CameraZoomCanceled(InputAction.CallbackContext context)
+        {
+            cameraProximity = Vector2.zero;
         }
 
         /// <summary>

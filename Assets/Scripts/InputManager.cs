@@ -62,10 +62,9 @@ namespace SolidSky
             inputActionsCoolCam.PlayerController.Camera.performed += CameraPerformed;
             inputActionsCoolCam.PlayerController.Camera.canceled += CameraCanceled;
 
-            inputActionsCoolCam.PlayerController.CameraZoom.performed += CameraZoomPerformed;
-            inputActionsCoolCam.PlayerController.CameraZoom.canceled += CameraZoomCanceled;
+            inputActionsCoolCam.PlayerController.CameraProximityChange.started += CameraProximityChangeStarted;
 
-            //Watch for boost input and apply functions if performed or canceled.
+            //Watch for boost input and apply functions if performed.
             inputActionsCoolCam.PlayerController.Boost.performed += Boost;
         }
 
@@ -177,25 +176,13 @@ namespace SolidSky
             cameraMove = Vector2.zero;
         }
 
-        private void CameraZoomPerformed(InputAction.CallbackContext context)
+        /// <summary>
+        ///     Sends event message to CameraController to set the camera proximity to a new value.
+        /// </summary>
+        /// <param name="context"></param>
+        private void CameraProximityChangeStarted(InputAction.CallbackContext context)
         {
-            cameraProximity = context.ReadValue<Vector2>();
-
-            if (cameraProximity.y > 0)
-            {
-                cameraProximity.y = 1;
-            }
-            else if (cameraProximity.y < 0)
-            {
-                cameraProximity.y = -1;
-            }
-
-            Debug.Log("Camera Zoom: " + cameraProximity);
-        }
-
-        private void CameraZoomCanceled(InputAction.CallbackContext context)
-        {
-            cameraProximity = Vector2.zero;
+            SendMessage("SetCamProximity", context.ReadValue<Vector2>());
         }
 
         /// <summary>

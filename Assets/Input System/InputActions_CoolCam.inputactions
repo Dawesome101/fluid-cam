@@ -33,10 +33,10 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "CameraZoom",
+                    "name": "CameraProximityChange",
                     "type": "Value",
                     "id": "bc854bbd-456f-4e09-9580-edf9f2a940b3",
-                    "expectedControlType": "Delta",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -248,7 +248,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse_Keyboard",
-                    "action": "CameraZoom",
+                    "action": "CameraProximityChange",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ad52ed60-a7c7-4572-8328-6820ee764303",
+                    "path": "<Gamepad>/dpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad_Generic",
+                    "action": "CameraProximityChange",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

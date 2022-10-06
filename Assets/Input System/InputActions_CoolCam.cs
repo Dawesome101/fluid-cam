@@ -55,10 +55,10 @@ public partial class @InputActions_CoolCam : IInputActionCollection2, IDisposabl
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""CameraZoom"",
+                    ""name"": ""CameraProximityChange"",
                     ""type"": ""Value"",
                     ""id"": ""bc854bbd-456f-4e09-9580-edf9f2a940b3"",
-                    ""expectedControlType"": ""Delta"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -270,7 +270,18 @@ public partial class @InputActions_CoolCam : IInputActionCollection2, IDisposabl
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse_Keyboard"",
-                    ""action"": ""CameraZoom"",
+                    ""action"": ""CameraProximityChange"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ad52ed60-a7c7-4572-8328-6820ee764303"",
+                    ""path"": ""<Gamepad>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad_Generic"",
+                    ""action"": ""CameraProximityChange"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -312,7 +323,7 @@ public partial class @InputActions_CoolCam : IInputActionCollection2, IDisposabl
         m_PlayerController_Camera = m_PlayerController.FindAction("Camera", throwIfNotFound: true);
         m_PlayerController_Movement = m_PlayerController.FindAction("Movement", throwIfNotFound: true);
         m_PlayerController_Boost = m_PlayerController.FindAction("Boost", throwIfNotFound: true);
-        m_PlayerController_CameraZoom = m_PlayerController.FindAction("CameraZoom", throwIfNotFound: true);
+        m_PlayerController_CameraProximityChange = m_PlayerController.FindAction("CameraProximityChange", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -375,7 +386,7 @@ public partial class @InputActions_CoolCam : IInputActionCollection2, IDisposabl
     private readonly InputAction m_PlayerController_Camera;
     private readonly InputAction m_PlayerController_Movement;
     private readonly InputAction m_PlayerController_Boost;
-    private readonly InputAction m_PlayerController_CameraZoom;
+    private readonly InputAction m_PlayerController_CameraProximityChange;
     public struct PlayerControllerActions
     {
         private @InputActions_CoolCam m_Wrapper;
@@ -383,7 +394,7 @@ public partial class @InputActions_CoolCam : IInputActionCollection2, IDisposabl
         public InputAction @Camera => m_Wrapper.m_PlayerController_Camera;
         public InputAction @Movement => m_Wrapper.m_PlayerController_Movement;
         public InputAction @Boost => m_Wrapper.m_PlayerController_Boost;
-        public InputAction @CameraZoom => m_Wrapper.m_PlayerController_CameraZoom;
+        public InputAction @CameraProximityChange => m_Wrapper.m_PlayerController_CameraProximityChange;
         public InputActionMap Get() { return m_Wrapper.m_PlayerController; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -402,9 +413,9 @@ public partial class @InputActions_CoolCam : IInputActionCollection2, IDisposabl
                 @Boost.started -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnBoost;
                 @Boost.performed -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnBoost;
                 @Boost.canceled -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnBoost;
-                @CameraZoom.started -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnCameraZoom;
-                @CameraZoom.performed -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnCameraZoom;
-                @CameraZoom.canceled -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnCameraZoom;
+                @CameraProximityChange.started -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnCameraProximityChange;
+                @CameraProximityChange.performed -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnCameraProximityChange;
+                @CameraProximityChange.canceled -= m_Wrapper.m_PlayerControllerActionsCallbackInterface.OnCameraProximityChange;
             }
             m_Wrapper.m_PlayerControllerActionsCallbackInterface = instance;
             if (instance != null)
@@ -418,9 +429,9 @@ public partial class @InputActions_CoolCam : IInputActionCollection2, IDisposabl
                 @Boost.started += instance.OnBoost;
                 @Boost.performed += instance.OnBoost;
                 @Boost.canceled += instance.OnBoost;
-                @CameraZoom.started += instance.OnCameraZoom;
-                @CameraZoom.performed += instance.OnCameraZoom;
-                @CameraZoom.canceled += instance.OnCameraZoom;
+                @CameraProximityChange.started += instance.OnCameraProximityChange;
+                @CameraProximityChange.performed += instance.OnCameraProximityChange;
+                @CameraProximityChange.canceled += instance.OnCameraProximityChange;
             }
         }
     }
@@ -448,6 +459,6 @@ public partial class @InputActions_CoolCam : IInputActionCollection2, IDisposabl
         void OnCamera(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnBoost(InputAction.CallbackContext context);
-        void OnCameraZoom(InputAction.CallbackContext context);
+        void OnCameraProximityChange(InputAction.CallbackContext context);
     }
 }

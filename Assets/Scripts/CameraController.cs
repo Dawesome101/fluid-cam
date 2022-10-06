@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace SolidSky
 {
@@ -224,10 +225,6 @@ namespace SolidSky
             camOrbitAxis.transform.parent = null;
         }
 
-        private void Update()
-        {
-            GetCamProximity(inputManager.cameraProximity.y);
-        }
         private void FixedUpdate()
         {
             GetCamPosTarget();
@@ -237,13 +234,18 @@ namespace SolidSky
             SetCamPosRot();
         }
 
-        private void GetCamProximity(float camProximityInput)
+        //***Invoked by InputManager when InputManager.CameraProximityChangeStarted is called.***
+        /// <summary>
+        ///     Sets the sensor probes maximum distance from the subject based on user input.
+        /// </summary>
+        /// <param name="camProximityInput"></param>
+        public void SetCamProximity(Vector2 camProximityInput)
         {
-            if (camProximityInput < 0)
+            if (camProximityInput.y < 0)
             {
                 camSensorProbeDistance -= camProximityStepCount;
             }
-            else if (camProximityInput > 0)
+            else if (camProximityInput.y > 0)
             {
                 camSensorProbeDistance += camProximityStepCount;
             }

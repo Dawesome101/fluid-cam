@@ -140,7 +140,6 @@ namespace SolidSky
         [Header("Debug Settings")]
         public bool enableDebug = false;
 
-        
 
         public void OnValidate()
         {
@@ -267,18 +266,45 @@ namespace SolidSky
         /// </summary>
         private void GetCamPosTarget()
         {
-            //Cast the sensor based on its type using the ray to detect the current environment.
+            //float camCeilingCastRadius = 0.25f;
+            //float camCeilingProbeDistance = camHeightOffset;
+            //float ceilingHitAdjustmentAmount = 0f;
+
+            //Ray camCeilingRay = new Ray(transform.position, Vector3.up);
+            //RaycastHit camCeilingHit;
+            //if (Physics.Raycast(camCeilingRay, out camCeilingHit, camCeilingProbeDistance, sensorHitLayerMask))
+            //{
+            //    ceilingHitAdjustmentAmount = camCeilingHit.distance;
+            //}
+
+            float camYPos;
+
+            //Cast the sensor using the ray to detect the current environment.
             Ray sensorRay = new Ray(camOrbitAxis.position, -camOrbitAxis.forward);
             sensorDidHit = Physics.SphereCast(sensorRay, camSensorCastRadius, out sensorHit, camSensorProbeDistance, sensorHitLayerMask);
 
             //Store position information based on if the sensor has detected a collision or not.
             if (sensorDidHit)
             {
-                camTargetPosition = new Vector3(sensorHit.point.x, sensorHit.point.y + camHeightOffset, sensorHit.point.z);
+                float upCheckOffset = 0.25f;
+                float camCeilingProbeDistance = camHeightOffset + upCheckOffset;
+                Vector3 test = new Vector3(sensorHit.point.x, sensorHit.point.y - upCheckOffset, sensorHit.point.z);
+                Ray camCeilingRay = new Ray(test, Vector3.up);
+                RaycastHit camCeilingHit;
+                if (Physics.Raycast(camCeilingRay, out camCeilingHit, camCeilingProbeDistance, sensorHitLayerMask))
+                {
+                    camYPos = camCeilingHit.point.y - upCheckOffset;
+                }
+                else
+                {
+                    camYPos = sensorHit.point.y + camHeightOffset;
+                }
+
+                camTargetPosition = new Vector3(sensorHit.point.x, camYPos, sensorHit.point.z);
             }
             else
             {
-                camTargetPosition = camOrbitAxis.TransformPoint(new Vector3(0f, camHeightOffset, -camSensorProbeDistance));
+                camTargetPosition = camOrbitAxis.TransformPoint(new Vector3(0f, camHeightOffset, -camSensorProbeDistance * 2f));
             }
         }
 

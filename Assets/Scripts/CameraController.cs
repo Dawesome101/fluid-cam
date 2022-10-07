@@ -136,10 +136,13 @@ namespace SolidSky
             "sensor ray. This keeps the camera from clipping into geometry and may require " +
             "adjustment for the projects specific needs.")]
         public float camHeightOffset = 1f;
+        [Tooltip("How far down on the y axis to set the origin of the ceiling check ray")]
+        public float camCeilingProbeVerticalOffset = 0.25f;
 
         [Header("Debug Settings")]
         public bool enableDebug = false;
-
+        public Color debugProbeHitColor = Color.red;
+        public Color debugProbeMissColor = Color.green;
 
         public void OnValidate()
         {
@@ -168,8 +171,7 @@ namespace SolidSky
             camAxisUpperAngleClamp = Mathf.Clamp(camAxisUpperAngleClamp, -70f, 80f);
 
 
-
-            //Camera sensor probe 
+            //Camera sensor probe Clamps  *** MORE DETAIL NEEDED ***
             camProximityStepCount = Mathf.Clamp(camProximityStepCount, 0f, Mathf.Infinity);
 
             camSensorProbeDistance = Mathf.Clamp(camSensorProbeDistance, 0f, Mathf.Infinity);
@@ -266,19 +268,14 @@ namespace SolidSky
         /// </summary>
         private void GetCamPosTarget()
         {
-            //float camCeilingCastRadius = 0.25f;
-            //float camCeilingProbeDistance = camHeightOffset;
-            //float ceilingHitAdjustmentAmount = 0f;
-
-            //Ray camCeilingRay = new Ray(transform.position, Vector3.up);
-            //RaycastHit camCeilingHit;
-            //if (Physics.Raycast(camCeilingRay, out camCeilingHit, camCeilingProbeDistance, sensorHitLayerMask))
-            //{
-            //    ceilingHitAdjustmentAmount = camCeilingHit.distance;
-            //}
-
+            //Create our variables and default values for camera y position and ceiling probe which are calculated over several steps.
             float camYPos;
+            float camCeilingProbeDistance = camHeightOffset + camCeilingProbeVerticalOffset;
+            RaycastHit camCeilingHit;
 
+
+            /// *** NEED TO CHANGE THIS TO A AN OVERLAP AND A CAST FOR FRINGE CASES WHEN CAMERA IS ON THE EDGE OF GEOMETRY AND THE VERTICAL RAY IS JUST OVER THE EDGE AND MISSES DETECTING CEILING***
+            /// 
             //Cast the sensor using the ray to detect the current environment.
             Ray sensorRay = new Ray(camOrbitAxis.position, -camOrbitAxis.forward);
             sensorDidHit = Physics.SphereCast(sensorRay, camSensorCastRadius, out sensorHit, camSensorProbeDistance, sensorHitLayerMask);
@@ -286,14 +283,16 @@ namespace SolidSky
             //Store position information based on if the sensor has detected a collision or not.
             if (sensorDidHit)
             {
-                float upCheckOffset = 0.25f;
-                float camCeilingProbeDistance = camHeightOffset + upCheckOffset;
-                Vector3 test = new Vector3(sensorHit.point.x, sensorHit.point.y - upCheckOffset, sensorHit.point.z);
-                Ray camCeilingRay = new Ray(test, Vector3.up);
-                RaycastHit camCeilingHit;
+
+                //NEED TO CHANGE THIS TO BE A FUNCTION WHICH DOES SOMETHING FOR SENSOR HIT AND MISS AS CURRENTLY SENSOR PROBE MISS IS UNACCOUNTED FOR!!!
+                
+                Vector3 camCeilingRayOrigin = new Vector3(sensorHit.point.x, sensorHit.point.y - camCeilingProbeVerticalOffset, sensorHit.point.z);
+                Ray camCeilingRay = new Ray(camCeilingRayOrigin, Vector3.up);
+                
+
                 if (Physics.Raycast(camCeilingRay, out camCeilingHit, camCeilingProbeDistance, sensorHitLayerMask))
                 {
-                    camYPos = camCeilingHit.point.y - upCheckOffset;
+                    camYPos = camCeilingHit.point.y - camCeilingProbeVerticalOffset;
                 }
                 else
                 {
@@ -380,14 +379,14 @@ namespace SolidSky
         }
 
         /// <summary>
-        ///     Calculates a dampened Vector3 and inverts the vertical value and/or applies deltaTime if specified (in that order).
+        ///     Calculates a dampened Vector3 based on user input. If inverted is true invert the vertical value. If useDeltaTime is true apply deltaTime. (in that order)
         /// </summary>
         /// <param name="horz"></param>
         /// <param name="vert"></param>
         /// <param name="damp"></param>
         /// <param name="inverted"></param>
         /// <param name="useDeltaTime"></param>
-        /// <returns>One of 3 outputs, a new Vector 3 (vert, horz, 0f) * damp, the same but inverted or the same but *= deltaT</returns>
+        /// <returns>One of three outputs, a new Vector 3 (vert, horz, 0f) * damp, the same but inverted or the same but *= deltaT. Return is intended to be a EulerAngle.</returns>
         private Vector3 GetCamOrbitAxisTargetRot(float horz, float vert, float damp, bool inverted, bool useDeltaTime)
         {
             Vector3 newVec = Vector3.zero;
@@ -409,20 +408,23 @@ namespace SolidSky
             return newVec;
         }
 
+        //Draw gizmos used durning runtime in the scene view to show where the current cast is aimed and where it has hit.
         void OnDrawGizmos()
         {
+            //Check to make sure the orbit axis isn't null so that no errors occur in the inspector before runtime.
             if (camOrbitAxis != null && enableDebug)
             {
+                //Use the hitInfo collected in GetCamPosTarget to determine where to draw debug objects.
                 if (sensorDidHit)
                 {
-                    if (Gizmos.color != Color.red) { Gizmos.color = Color.red; }
+                    if (Gizmos.color != debugProbeHitColor) { Gizmos.color = debugProbeHitColor; }
 
                     Gizmos.DrawRay(camOrbitAxis.position, -camOrbitAxis.forward * sensorHit.distance);
                     Gizmos.DrawWireSphere(sensorHit.point, camSensorCastRadius);
                 }
                 else
                 {
-                    if (Gizmos.color != Color.green) { Gizmos.color = Color.green; }
+                    if (Gizmos.color != debugProbeMissColor) { Gizmos.color = debugProbeMissColor; }
 
                     Gizmos.DrawRay(camOrbitAxis.position, -camOrbitAxis.forward * camSensorProbeDistance);
                     Gizmos.DrawWireSphere(camOrbitAxis.position + -camOrbitAxis.forward * camSensorProbeDistance, camSensorCastRadius);

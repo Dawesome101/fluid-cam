@@ -136,8 +136,10 @@ namespace SolidSky
             "sensor ray. This keeps the camera from clipping into geometry and may require " +
             "adjustment for the projects specific needs.")]
         public float camHeightOffset = 1f;
-        [Tooltip("How far down on the y axis to set the origin of the ceiling check ray")]
-        public float camCeilingProbeVerticalOffset = 0.25f;
+        [Tooltip("The imaginary size of the camera. This helps the sensors more accurately " +
+            "detect the environment. The default is 0.5 however this can be changed to meet " +
+            "a projects specific needs.")]
+        public float simulatedCamSize = 0.5f;
 
         [Header("Debug Settings")]
         public bool enableDebug = false;
@@ -268,31 +270,25 @@ namespace SolidSky
         /// </summary>
         private void GetCamPosTarget()
         {
-            //Create our variables and default values for camera y position and ceiling probe which are calculated over several steps.
+            //Create variables and default values which are used to sense the environment for the camera target position.
             float camYPos;
-            float camCeilingProbeDistance = camHeightOffset + camCeilingProbeVerticalOffset;
+            float camCeilingProbeDistance = camHeightOffset + simulatedCamSize;
+            Vector3 camCeilingRayOrigin;
+            Ray camCeilingRay;
             RaycastHit camCeilingHit;
 
-
-            /// *** NEED TO CHANGE THIS TO A AN OVERLAP AND A CAST FOR FRINGE CASES WHEN CAMERA IS ON THE EDGE OF GEOMETRY AND THE VERTICAL RAY IS JUST OVER THE EDGE AND MISSES DETECTING CEILING***
-            /// 
             //Cast the sensor using the ray to detect the current environment.
             Ray sensorRay = new Ray(camOrbitAxis.position, -camOrbitAxis.forward);
             sensorDidHit = Physics.SphereCast(sensorRay, camSensorCastRadius, out sensorHit, camSensorProbeDistance, sensorHitLayerMask);
 
-            //Store position information based on if the sensor has detected a collision or not.
             if (sensorDidHit)
             {
+                camCeilingRayOrigin = new Vector3(sensorHit.point.x, sensorHit.point.y - simulatedCamSize - 0.1f, sensorHit.point.z);
+                camCeilingRay = new Ray(camCeilingRayOrigin, Vector3.up);
 
-                //NEED TO CHANGE THIS TO BE A FUNCTION WHICH DOES SOMETHING FOR SENSOR HIT AND MISS AS CURRENTLY SENSOR PROBE MISS IS UNACCOUNTED FOR!!!
-                
-                Vector3 camCeilingRayOrigin = new Vector3(sensorHit.point.x, sensorHit.point.y - camCeilingProbeVerticalOffset, sensorHit.point.z);
-                Ray camCeilingRay = new Ray(camCeilingRayOrigin, Vector3.up);
-                
-
-                if (Physics.Raycast(camCeilingRay, out camCeilingHit, camCeilingProbeDistance, sensorHitLayerMask))
+                if (Physics.SphereCast(camCeilingRay, simulatedCamSize, out camCeilingHit, camCeilingProbeDistance, sensorHitLayerMask))
                 {
-                    camYPos = camCeilingHit.point.y - camCeilingProbeVerticalOffset;
+                    camYPos = camCeilingHit.point.y - simulatedCamSize;
                 }
                 else
                 {
@@ -303,7 +299,20 @@ namespace SolidSky
             }
             else
             {
-                camTargetPosition = camOrbitAxis.TransformPoint(new Vector3(0f, camHeightOffset, -camSensorProbeDistance * 2f));
+                Vector3 sensorEndPoint = camOrbitAxis.TransformPoint(new Vector3(0f, camHeightOffset, -camSensorProbeDistance * 2f));
+                camCeilingRayOrigin = new Vector3(sensorEndPoint.x, sensorEndPoint.y - simulatedCamSize - 0.25f, sensorEndPoint.z);
+                camCeilingRay = new Ray(camCeilingRayOrigin, Vector3.up);
+
+                if (Physics.SphereCast(camCeilingRay, simulatedCamSize, out camCeilingHit, camCeilingProbeDistance, sensorHitLayerMask))
+                {
+                    camYPos = camCeilingHit.point.y - simulatedCamSize;
+                }
+                else
+                {
+                    camYPos = sensorEndPoint.y + camHeightOffset;
+                }
+
+                camTargetPosition = new Vector3(sensorEndPoint.x, camYPos, sensorEndPoint.z);
             }
         }
 

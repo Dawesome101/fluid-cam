@@ -214,7 +214,7 @@ Transform:
   m_GameObject: {fileID: 259571222}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 5, z: 0}
-  m_LocalScale: {x: 11.645, y: 1, z: 15.045}
+  m_LocalScale: {x: 12.6459055, y: 0.18196383, z: 21.294693}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -437,7 +437,10 @@ MonoBehaviour:
   camSensorProbeDistanceMin: 0
   camSensorProbeDistanceMax: 10
   camHeightOffset: 1
+  simulatedCamSize: 0.5
   enableDebug: 1
+  debugProbeHitColor: {r: 1, g: 0, b: 0, a: 1}
+  debugProbeMissColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!114 &639331580
 MonoBehaviour:
   m_ObjectHideFlags: 0

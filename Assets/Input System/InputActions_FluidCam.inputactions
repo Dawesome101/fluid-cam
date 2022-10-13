@@ -1,5 +1,5 @@
 {
-    "name": "InputActions_CoolCam",
+    "name": "InputActions_FluidCam",
     "maps": [
         {
             "name": "PlayerController",
@@ -24,15 +24,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Boost",
-                    "type": "Button",
-                    "id": "a1db0b1a-3d2e-4422-8e83-1a709121936f",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
                     "name": "CameraProximityChange",
                     "type": "Value",
                     "id": "bc854bbd-456f-4e09-9580-edf9f2a940b3",
@@ -40,31 +31,18 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Boost",
+                    "type": "Button",
+                    "id": "a1db0b1a-3d2e-4422-8e83-1a709121936f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "611bf6e5-8171-44a1-94c7-875b693bf107",
-                    "path": "<Keyboard>/leftShift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse_Keyboard",
-                    "action": "Boost",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "75b15e5e-3f53-4438-a678-896ce8e78787",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad_Generic",
-                    "action": "Boost",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "a0b12dd1-9b4c-4590-8e7b-27d12c232ea2",
@@ -260,6 +238,28 @@
                     "processors": "",
                     "groups": "Gamepad_Generic",
                     "action": "CameraProximityChange",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "611bf6e5-8171-44a1-94c7-875b693bf107",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse_Keyboard",
+                    "action": "Boost",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "75b15e5e-3f53-4438-a678-896ce8e78787",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad_Generic",
+                    "action": "Boost",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

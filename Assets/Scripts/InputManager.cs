@@ -9,7 +9,7 @@ namespace SolidSky
     public class InputManager : MonoBehaviour
     {
         //Input Actions Component
-        public InputActions_CoolCam inputActionsCoolCam;
+        public InputActions_FluidCam inputActionsFluidCam;
 
         //Currently Active Device
         public enum CurrentDevice { KeyboardMouse, Gamepad };
@@ -28,7 +28,7 @@ namespace SolidSky
 
         private void Awake()
         {
-            inputActionsCoolCam = new InputActions_CoolCam();
+            inputActionsFluidCam = new InputActions_FluidCam();
 
             //Check for Keyboard and Mouse and assign them or throw an error if either are not detected.
             if (InputSystem.GetDevice<Keyboard>() == null || InputSystem.GetDevice<Mouse>() == null)
@@ -52,20 +52,20 @@ namespace SolidSky
             }
 
             //Enable Player Controller to send device actions
-            inputActionsCoolCam.PlayerController.Enable();
+            inputActionsFluidCam.PlayerController.Enable();
 
             //Watch for player movement input and apply functions if performed or canceled.
-            inputActionsCoolCam.PlayerController.Movement.performed += MovementPerformed;
-            inputActionsCoolCam.PlayerController.Movement.canceled += MovementCanceled;
+            inputActionsFluidCam.PlayerController.Movement.performed += MovementPerformed;
+            inputActionsFluidCam.PlayerController.Movement.canceled += MovementCanceled;
 
             //Watch for camera movement input and apply functions if performed or canceled.
-            inputActionsCoolCam.PlayerController.Camera.performed += CameraPerformed;
-            inputActionsCoolCam.PlayerController.Camera.canceled += CameraCanceled;
+            inputActionsFluidCam.PlayerController.Camera.performed += CameraPerformed;
+            inputActionsFluidCam.PlayerController.Camera.canceled += CameraCanceled;
 
-            inputActionsCoolCam.PlayerController.CameraProximityChange.started += CameraProximityChangeStarted;
+            inputActionsFluidCam.PlayerController.CameraProximityChange.started += CameraProximityChangeStarted;
 
             //Watch for boost input and apply functions if performed.
-            inputActionsCoolCam.PlayerController.Boost.performed += Boost;
+            inputActionsFluidCam.PlayerController.Boost.performed += Boost;
         }
 
         private void Update()

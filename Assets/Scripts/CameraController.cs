@@ -173,7 +173,7 @@ namespace SolidSky
             camAxisUpperAngleClamp = Mathf.Clamp(camAxisUpperAngleClamp, -70f, 80f);
 
 
-            //Camera sensor probe Clamps  *** MORE COMMENT DETAIL NEEDED ***
+            //Camera sensor probe Clamps  *** MORE DETAIL NEEDED ***
             camProximityStepCount = Mathf.Clamp(camProximityStepCount, 0f, Mathf.Infinity);
 
             camSensorProbeDistance = Mathf.Clamp(camSensorProbeDistance, 0f, Mathf.Infinity);
@@ -239,7 +239,7 @@ namespace SolidSky
 
         //***Invoked by InputManager when InputManager.CameraProximityChangeStarted is called.***
         /// <summary>
-        ///     Sets the sensor probes maximum distance from the subject based on user input. Think of this as zooming the camera in and out.
+        ///     Sets the sensor probes maximum distance from the subject based on user input.
         /// </summary>
         /// <param name="camProximityInput"></param>
         public void SetCamProximity(Vector2 camProximityInput)
@@ -273,8 +273,9 @@ namespace SolidSky
             //Create variables and default values which are used to sense the environment for the camera target position.
             float camYPos;
             float camCeilingProbeDistance = camHeightOffset + simulatedCamSize;
-            float simulatedCamSizePadding = simulatedCamSize - 0.1f;
             Vector3 camCeilingRayOrigin;
+            Ray camCeilingRay;
+            RaycastHit camCeilingHit;
 
             //Cast the sensor using the ray to detect the current environment.
             Ray sensorRay = new Ray(camOrbitAxis.position, -camOrbitAxis.forward);
@@ -282,43 +283,36 @@ namespace SolidSky
 
             if (sensorDidHit)
             {
-                camCeilingRayOrigin = new Vector3(sensorHit.point.x, sensorHit.point.y - simulatedCamSizePadding, sensorHit.point.z);
+                camCeilingRayOrigin = new Vector3(sensorHit.point.x, sensorHit.point.y - simulatedCamSize - 0.1f, sensorHit.point.z);
+                camCeilingRay = new Ray(camCeilingRayOrigin, Vector3.up);
 
-                camYPos = CheckForCeiling(camCeilingRayOrigin, camCeilingProbeDistance, sensorHit.point.y);
+                if (Physics.SphereCast(camCeilingRay, simulatedCamSize, out camCeilingHit, camCeilingProbeDistance, sensorHitLayerMask))
+                {
+                    camYPos = camCeilingHit.point.y - simulatedCamSize;
+                }
+                else
+                {
+                    camYPos = sensorHit.point.y + camHeightOffset;
+                }
 
                 camTargetPosition = new Vector3(sensorHit.point.x, camYPos, sensorHit.point.z);
             }
             else
             {
-                Vector3 camSensorEndPoint = camOrbitAxis.TransformPoint(new Vector3(0f, camHeightOffset, -camSensorProbeDistance * 2f));
+                Vector3 sensorEndPoint = camOrbitAxis.TransformPoint(new Vector3(0f, camHeightOffset, -camSensorProbeDistance * 2f));
+                camCeilingRayOrigin = new Vector3(sensorEndPoint.x, sensorEndPoint.y - simulatedCamSize - 0.25f, sensorEndPoint.z);
+                camCeilingRay = new Ray(camCeilingRayOrigin, Vector3.up);
 
-                camCeilingRayOrigin = new Vector3(camSensorEndPoint.x, camSensorEndPoint.y - simulatedCamSizePadding, camSensorEndPoint.z);
+                if (Physics.SphereCast(camCeilingRay, simulatedCamSize, out camCeilingHit, camCeilingProbeDistance, sensorHitLayerMask))
+                {
+                    camYPos = camCeilingHit.point.y - simulatedCamSize;
+                }
+                else
+                {
+                    camYPos = sensorEndPoint.y + camHeightOffset;
+                }
 
-                camYPos = CheckForCeiling(camCeilingRayOrigin, camCeilingProbeDistance, camSensorEndPoint.y);
-
-                camTargetPosition = new Vector3(camSensorEndPoint.x, camYPos, camSensorEndPoint.z);
-            }
-        }
-
-        /// <summary>
-        ///     Use a SphereCast to check for a ceiling above the camera and based on whether it hits or misses, return a calculated y value for the camera y target position.
-        /// </summary>
-        /// <param name="camCeilingRayOrigin"></param>
-        /// <param name="camCeilingProbeDistance"></param>
-        /// <param name="camSensorEndPoint"></param>
-        /// <returns></returns>
-        private float CheckForCeiling(Vector3 camCeilingRayOrigin, float camCeilingProbeDistance, float camSensorEndPoint)
-        {
-            Ray camCeilingRay = new Ray(camCeilingRayOrigin, Vector3.up);
-            RaycastHit camCeilingHit;
-
-            if (Physics.SphereCast(camCeilingRay, simulatedCamSize, out camCeilingHit, camCeilingProbeDistance, sensorHitLayerMask))
-            {
-                return camCeilingHit.point.y - simulatedCamSize;
-            }
-            else
-            {
-                return camSensorEndPoint + camHeightOffset;
+                camTargetPosition = new Vector3(sensorEndPoint.x, camYPos, sensorEndPoint.z);
             }
         }
 
